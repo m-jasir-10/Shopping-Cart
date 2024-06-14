@@ -1,0 +1,41 @@
+<section>
+    <div class="container mt-5">
+        <div class="row">
+            <div>
+                <a class="btn btn-success float-end" href="/admin/add-product" role="button">Add Products</a>
+            </div>
+        </div>
+        <div class="row">
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each products}}
+                    <tr>
+                        <th scope="row">{{increment @index}}</th>
+                        <td><img src="{{this.image}}" alt="" height="50px"></td>
+                        <td>{{this.name}}</td>
+                        <td>{{this.category}}</td>
+                        <td>{{this.description}}</td>
+                        <td>{{this.price}}</td>
+                        <td>
+                            <a href="" class="btn btn-primary">Edit</a>
+                            <a href="" class="btn btn-danger"
+                                onclick="return confirm('Are you sure you want to delete ?')">Delete</a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
