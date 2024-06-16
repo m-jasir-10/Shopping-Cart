@@ -1,40 +1,13 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const productHelpers = require('../helpers/product-helpers');
+const router = express.Router();
+const path = require('path');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  let products = [
-    {
-      name: "Iphone 11",
-      category: "Mobile",
-      description: "This is Iphone",
-      price: "60000",
-      image: "https://images-na.ssl-images-amazon.com/images/I/71i2XhHU3pL._SL1500_.jpg"
-    },
-    {
-      name: "Realme",
-      category: "Mobile",
-      description: "This is Realme",
-      price: "60000",
-      image: "https://images-na.ssl-images-amazon.com/images/I/71i2XhHU3pL._SL1500_.jpg"
-    },
-    {
-      name: "Samsung",
-      category: "Mobile",
-      description: "This is Samsung",
-      price: "60000",
-      image: "https://images-na.ssl-images-amazon.com/images/I/71i2XhHU3pL._SL1500_.jpg"
-    },
-    {
-      name: "Lenovo",
-      category: "Mobile",
-      description: "This is Lenovo",
-      price: "60000",
-      image: "https://images-na.ssl-images-amazon.com/images/I/71i2XhHU3pL._SL1500_.jpg"
-    }
-  ];
-
   res.render('admin/view-products.hbs', { admin: true, products });
+
+  
 });
 
 router.get('/add-product', (req, res) => {
@@ -42,8 +15,33 @@ router.get('/add-product', (req, res) => {
 });
 
 router.post('/add-product', (req, res) => {
-  console.log(req.body);
-  console.log(req.files.image);
+  let image = req.files.image;
+
+  productHelpers.addProduct(req.body)
+    .then((productId) => {
+      let imagePath = '/images/products/' + productId + path.extname(image.name);
+      let uploadPath = './public' + imagePath;
+      image.mv(uploadPath, (err) => {
+        if (!err) {
+          productHelpers.updateProductImage(productId, imagePath)
+            .then(() => {
+              res.render('admin/add-product', { admin: true });
+            })
+            .catch((err) => {
+              console.error("Error updating product image:", err);
+              res.status(500).send("Error updating product image");
+            });
+        } else {
+          console.error("Error uploading image:", err);
+          res.status(500).send("Error uploading image");
+        }
+      });
+    })
+    .catch((err) => {
+      console.error("Error adding product:", err);
+      res.status(500).send("Error adding product");
+    });
 });
+
 
 module.exports = router;
