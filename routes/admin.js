@@ -5,9 +5,14 @@ const path = require('path');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('admin/view-products.hbs', { admin: true, products });
-
-  
+  productHelpers.getAllProducts()
+    .then((products) => {
+      res.render('admin/view-products.hbs', { admin: true, products });
+    })
+    .catch((err) => {
+      console.error("Error fetching products:", err);
+      res.status(500).send("Error fetching products");
+    });
 });
 
 router.get('/add-product', (req, res) => {

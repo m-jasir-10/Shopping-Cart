@@ -29,7 +29,16 @@ module.exports = {
                     reject(err);
                 });
         });
-    }
+    },
 
-    
+    getAllProducts: () => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const products = await db.get().collection(collections.PRODUCT_COLLECTION).find().toArray();
+                resolve(products);
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
 };
