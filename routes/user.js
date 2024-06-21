@@ -14,6 +14,14 @@ const redirectHome = (req, res, next) => {
   }
 };
 
+const verifyLogin = (req, res, next) => {
+  if (req.session.userLoggedIn) {
+    next();
+  } else {
+    res.redirect('/login');
+  }
+};
+
 /* GET users listing. */
 router.get('/', function (req, res, next) {
   let user = req.session.user;
@@ -33,11 +41,6 @@ router.get('/signup', redirectHome, (req, res) => {
   req.session.signupErr = null;
 });
 
-router.get('/login', redirectHome, (req, res) => {
-  res.render('user/login', { loginErr: req.session.loginErr });
-  req.session.loginErr = null;
-});
-
 router.post('/signup', (req, res) => {
   userHelpers.doSignup(req.body).then((response) => {
     if (response.status) {
@@ -47,6 +50,11 @@ router.post('/signup', (req, res) => {
       res.redirect('/signup');
     }
   });
+});
+
+router.get('/login', redirectHome, (req, res) => {
+  res.render('user/login', { loginErr: req.session.loginErr });
+  req.session.loginErr = null;
 });
 
 router.post('/login', (req, res) => {
@@ -65,6 +73,11 @@ router.post('/login', (req, res) => {
 router.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
+});
+
+router.get('/cart', verifyLogin, (req, res) => {
+  let user = req.session.user;
+  res.render('user/cart', { user });
 });
 
 module.exports = router;

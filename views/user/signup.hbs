@@ -4,8 +4,11 @@
             <div class="col-md-6">
                 <h2 class="text-center mb-3">Create new account</h2>
                 {{#if signupErr}}
-                <p class="error" style="color: red;">{{signupErr}}</p>
+                <div class="alert alert-danger" role="alert">
+                    {{signupErr}}
+                </div>
                 {{/if}}
+
                 <form action="/signup" method="post">
                     <div class="mb-3">
                         <label for="nameInput" class="form-label">Name</label>
