@@ -1,44 +1,40 @@
 <section>
     <div class="container mt-5 mb-5">
         <div class="row">
-            <div class="col-md-8">
-                <h2 class="text-center mb-2">Add Product</h2>
-                {{#if message}}
-                <div class="alert alert-success" role="alert">
-                    {{message}}
-                </div>
-                {{/if}}
-
-                <form action="/admin/add-product" method="post" enctype="multipart/form-data">
+            <div class="col-md-6">
+                <h2 class="text-center mb-3">Edit Product</h2>
+                <form action="/admin/edit-product/{{product._id}}" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="titleInput" class="form-label">Name:</label>
                         <input type="text" class="form-control" name="name" id="titleInput"
-                            placeholder="Enter Product Name" value="Vivo V30">
+                            placeholder="Enter Product Name" value="{{product.name}}">
                     </div>
                     <div class="mb-3">
                         <label for="categoryInput" class="form-label">Category:</label>
                         <input type="text" class="form-control" name="category" id="categoryInput"
-                            placeholder="Enter Product Category" value="Mobile">
+                            placeholder="Enter Product Category" value="{{product.category}}">
                     </div>
-                    <div class="mb-3">
+                    <div class=" mb-3">
                         <label for="descriptionInput" class="form-label">Description:</label>
                         <input type="text" class="form-control" name="description" id="descriptionInput"
-                            placeholder="Enter Product Description" value="This is a good phone">
+                            placeholder="Enter Product Description" value="{{product.description}}">
                     </div>
-                    <div class="mb-3">
+                    <div class=" mb-3">
                         <label for="priceInput" class="form-label">Price:</label>
                         <input type="number" class="form-control" name="price" id="priceInput"
-                            placeholder="Enter Product price" value="1000">
+                            placeholder="Enter Product price" value="{{product.price}}">
                     </div>
                     <div class="mb-3">
                         <label for="imageFile" class="form-label">Image:</label>
-                        <img src="" alt="" height="100px" class="m-2" id="imageView">
+                        <img src="{{product.image}}" alt="" height="100px" class="m-2" id="imageView">
                         <input class="form-control" type="file" name="image" id="imageFile" accept=""
                             onchange="viewImage(event)">
                     </div>
-                    <button class="btn btn-success float-end mt-3" type="submit">
-                        Add product
-                    </button>
+                    <div class="mb-3">
+                        <button class="btn btn-success float-end" type="submit">
+                            Edit product
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -48,5 +44,5 @@
 <script>
     function viewImage(event) {
         document.getElementById('imageView').src = URL.createObjectURL(event.target.files[0]);
-    };
+    }
 </script>
