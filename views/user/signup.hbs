@@ -10,16 +10,21 @@
                     <div class="mb-3">
                         <label for="nameInput" class="form-label">Name</label>
                         <input type="text" class="form-control" id="nameInput" name="name"
-                            placeholder="Enter your name...">
+                            placeholder="Enter your name">
                     </div>
                     <div class="mb-3">
                         <label for="emailInput" class="form-label">Email address</label>
                         <input type="email" class="form-control" id="emailInput" name="email"
-                            placeholder="Enter your email...">
+                            placeholder="Enter your email">
                         <div class=" mb-3">
                             <label for="inputPassword" class="form-label">Password</label>
                             <input type="password" id="inputPassword" name="password" class="form-control"
-                                placeholder="Enter password here">
+                                placeholder="Enter your password here">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="showPasswordCheck"
+                                onclick="togglePassword()">
+                            <label class="form-check-label" for="showPasswordCheck">Show Password</label>
                         </div>
                         <div class="mb-3">
                             <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
@@ -35,3 +40,14 @@
         </div>
     </div>
 </section>
+
+<script>
+    function togglePassword() {
+        var passwordInput = document.getElementById('inputPassword');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+        } else {
+            passwordInput.type = 'password';
+        }
+    }
+</script>

@@ -7,6 +7,10 @@ const collections = require('../config/collections');
 module.exports = {
     doSignup: (userData) => {
         return new Promise(async (resolve, reject) => {
+            if (!userData.name || !userData.email || !userData.password) {
+                return resolve({ status: false, message: 'All fields are required' });
+            }
+
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(userData.email)) {
                 return resolve({ status: false, message: 'Invalid email format' });
@@ -14,10 +18,6 @@ module.exports = {
 
             if (userData.password.length < 6) {
                 return resolve({ status: false, message: 'Password must be at least 6 characters long' });
-            }
-
-            if (!userData.Name || !userData.Email || !userData.Password) {
-                resolve({ status: false, message: 'All fields are required' });
             }
 
             let user = await db.get().collection(collections.USER_COLLECTION).findOne({ email: userData.email });
@@ -35,6 +35,10 @@ module.exports = {
 
     doLogin: (userData) => {
         return new Promise(async (resolve, reject) => {
+            if (!userData.email || !userData.password) {
+                return resolve({ status: false, message: 'All fields are required' });
+            }
+
             let response = {};
             let user = await db.get().collection(collections.USER_COLLECTION).findOne({ email: userData.email });
             if (user) {
