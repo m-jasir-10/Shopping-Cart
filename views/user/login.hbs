@@ -1,0 +1,33 @@
+<section>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <h2 class="text-center mb-3">Login</h2>
+                {{#if loginErr}}
+                <p class="error" style="color: red;">{{loginErr}}</p>
+                {{/if}}
+                <form action="/login" method="post">
+                    <div class="mb-3">
+                        <label for="emailInput" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="emailInput" name="email"
+                            placeholder="Enter your email..." >
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password" id="inputPassword"
+                            placeholder="Enter password here" >
+                    </div>
+                    <div class="mb-3">
+                        <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                            href="/signup">
+                            Create new account ?
+                        </a>
+                        <button type="submit" class="btn btn-primary float-end">
+                            Login
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
