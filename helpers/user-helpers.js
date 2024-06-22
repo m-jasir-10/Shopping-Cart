@@ -57,5 +57,61 @@ module.exports = {
                 resolve({ status: false, message: 'Invalid email or password' });
             }
         });
+    },
+
+    addToCart: (productId, userId) => {
+        return new Promise(async (resolve, reject) => {
+            let userCart = await db.get().collection(collections.CART_COLLECTION).findOne({ user: new ObjectId(userId) });
+            if (userCart) {
+                db.get().collection(collections.CART_COLLECTION)
+                    .updateOne({ user: new ObjectId(userId) },
+                        {
+                            $push: { products: new ObjectId(productId) }
+                        }
+                    ).then((response) => {
+                        resolve();
+                    });
+            } else {
+                let cartObj = {
+                    user: new ObjectId(userId),
+                    products: [new ObjectId(productId)]
+                };
+                db.get().collection(collections.CART_COLLECTION).insertOne(cartObj)
+                    .then((response) => {
+                        resolve();
+                    });
+            }
+        });
+    },
+
+    getCartProducts: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let cartItems = await db.get().collection(collections.CART_COLLECTION).aggregate([
+                {
+                    $match: {
+                        user: new ObjectId(userId)
+                    }
+                },
+                {
+                    $lookup: {
+                        from: collections.PRODUCT_COLLECTION,
+                        let: {
+                            productList: '$products'
+                        },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $in: ['$_id', '$$productList']
+                                    }
+                                }
+                            }
+                        ],
+                        as: 'cartItems'
+                    }
+                }
+            ]).toArray();
+            resolve(cartItems[0].cartItems);
+        });
     }
 };

@@ -38,8 +38,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(fileUpload());
 app.use(session({
   secret: 'hashKey',
-  resave: true,
-  saveUninitialized: true,
+  resave: false,
+  saveUninitialized: false,
   cookie: {
     maxAge: 7200000
   }

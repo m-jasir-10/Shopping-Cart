@@ -44,6 +44,8 @@ router.get('/signup', redirectHome, (req, res) => {
 router.post('/signup', (req, res) => {
   userHelpers.doSignup(req.body).then((response) => {
     if (response.status) {
+      req.session.user = response.user;
+      req.session.userLoggedIn = true;
       res.redirect('/login');
     } else {
       req.session.signupErr = response.message;
@@ -75,9 +77,17 @@ router.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
-router.get('/cart', verifyLogin, (req, res) => {
+router.get('/cart', verifyLogin, async (req, res) => {
   let user = req.session.user;
+  let products = await userHelpers.getCartProducts(user._id);
+  console.log(products);
   res.render('user/cart', { user });
+});
+
+router.get('/add-to-cart/:id', verifyLogin, (req, res) => {
+  userHelpers.addToCart(req.params.id, req.session.user._id).then((response) => {
+    res.redirect('/');
+  })
 });
 
 module.exports = router;
