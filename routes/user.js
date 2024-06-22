@@ -23,13 +23,19 @@ const verifyLogin = (req, res, next) => {
 };
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
+router.get('/', async (req, res, next) => {
   let user = req.session.user;
+  let cartCount = null;
+
+  if (user) {
+    cartCount = await userHelpers.getCartCount(user._id);
+  }
+
   console.log(user);
 
   productHelpers.getAllProducts()
     .then((products) => {
-      res.render('user/view-products.hbs', { products, user });
+      res.render('user/view-products.hbs', { products, user, cartCount });
     })
     .catch((error) => {
       console.error(error);
@@ -80,13 +86,18 @@ router.get('/logout', (req, res) => {
 router.get('/cart', verifyLogin, async (req, res) => {
   let user = req.session.user;
   let products = await userHelpers.getCartProducts(user._id);
+  let cartCount = null;
+
+  if (user) {
+    cartCount = await userHelpers.getCartCount(user._id);
+  }
   console.log(products);
-  res.render('user/cart', { user, products });
+  res.render('user/cart', { user, products, cartCount });
 });
 
 router.get('/add-to-cart/:id', verifyLogin, (req, res) => {
-  userHelpers.addToCart(req.params.id, req.session.user._id).then((response) => {
-    res.redirect('/');
+  userHelpers.addToCart(req.params.id, req.session.user._id).then(() => {
+    res.json({status: true});
   })
 });
 
