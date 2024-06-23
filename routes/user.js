@@ -31,8 +31,6 @@ router.get('/', async (req, res, next) => {
     cartCount = await userHelpers.getCartCount(user._id);
   }
 
-  console.log(user);
-
   productHelpers.getAllProducts()
     .then((products) => {
       res.render('user/view-products.hbs', { products, user, cartCount });
@@ -91,14 +89,28 @@ router.get('/cart', verifyLogin, async (req, res) => {
   if (user) {
     cartCount = await userHelpers.getCartCount(user._id);
   }
-  console.log(products);
+
   res.render('user/cart', { user, products, cartCount });
 });
 
-router.get('/add-to-cart/:id', verifyLogin, (req, res) => {
+router.get('/add-to-cart/:id', (req, res) => {
   userHelpers.addToCart(req.params.id, req.session.user._id).then(() => {
-    res.json({status: true});
+    res.json({ status: true });
   })
 });
+
+router.post('/change-product-quantity', (req, res) => {
+  console.log(req.body);
+  userHelpers.changeProductQuantity(req.body).then((response) => {
+    res.json(response);
+  });
+});
+
+router.post('/remove-product-from-cart', verifyLogin, (req, res) => {
+  userHelpers.removeProductFromCart(req.body).then((response) => {
+      res.json(response);
+  });
+});
+
 
 module.exports = router;

@@ -1,5 +1,4 @@
 const db = require('../config/connection');
-const collection = require('../config/collections');
 const bcrypt = require('bcrypt');
 const { ObjectId } = require('mongodb');
 const collections = require('../config/collections');
@@ -60,21 +59,39 @@ module.exports = {
     },
 
     addToCart: (productId, userId) => {
+        let productObj = {
+            item: new ObjectId(productId),
+            quantity: 1
+        };
+
         return new Promise(async (resolve, reject) => {
             let userCart = await db.get().collection(collections.CART_COLLECTION).findOne({ user: new ObjectId(userId) });
             if (userCart) {
-                db.get().collection(collections.CART_COLLECTION)
-                    .updateOne({ user: new ObjectId(userId) },
-                        {
-                            $push: { products: new ObjectId(productId) }
-                        }
-                    ).then((response) => {
-                        resolve();
-                    });
+                let productExist = userCart.products.findIndex(product => product.item == productId);
+
+                if (productExist != -1) {
+                    db.get().collection(collections.CART_COLLECTION)
+                        .updateOne({ user: new ObjectId(userId), 'products.item': new ObjectId(productId) },
+                            {
+                                $inc: { 'products.$.quantity': 1 }
+                            }
+                        ).then(() => {
+                            resolve();
+                        });
+                } else {
+                    db.get().collection(collections.CART_COLLECTION)
+                        .updateOne({ user: new ObjectId(userId) },
+                            {
+                                $push: { products: productObj }
+                            }
+                        ).then(() => {
+                            resolve();
+                        });
+                }
             } else {
                 let cartObj = {
                     user: new ObjectId(userId),
-                    products: [new ObjectId(productId)]
+                    products: [productObj]
                 };
                 db.get().collection(collections.CART_COLLECTION).insertOne(cartObj)
                     .then((response) => {
@@ -93,37 +110,99 @@ module.exports = {
                     }
                 },
                 {
+                    $unwind: '$products'
+                },
+                {
+                    $project: {
+                        item: '$products.item',
+                        quantity: '$products.quantity'
+                    }
+                },
+                {
                     $lookup: {
                         from: collections.PRODUCT_COLLECTION,
-                        let: {
-                            productList: '$products'
-                        },
-                        pipeline: [
-                            {
-                                $match: {
-                                    $expr: {
-                                        $in: ['$_id', '$$productList']
-                                    }
-                                }
-                            }
-                        ],
-                        as: 'cartItems'
+                        localField: 'item',
+                        foreignField: '_id',
+                        as: 'product'
+                    }
+                },
+                {
+                    $project: {
+                        item: 1,
+                        quantity: 1,
+                        product: {
+                            $arrayElemAt: ['$product', 0]
+                        }
                     }
                 }
             ]).toArray();
-            resolve(cartItems[0]?.cartItems || []);
+            resolve(cartItems);
         });
     },
 
     getCartCount: (userId) => {
         return new Promise(async (resolve, reject) => {
             let count = 0;
-            let cart = await db.get().collection(collections.CART_COLLECTION).findOne({ user: new ObjectId(userId) });
-            if (cart) {
-                count = cart.products.length;
+            let cart = await db.get().collection(collections.CART_COLLECTION).aggregate([
+                {
+                    $match: { user: new ObjectId(userId) }
+                },
+                {
+                    $project: {
+                        totalQuantity: { $sum: '$products.quantity' }
+                    }
+                }
+            ]).toArray();
+
+            if (cart.length > 0) {
+                count = cart[0].totalQuantity;
             }
             console.log(count);
             resolve(count);
-        })
+        });
+    },
+
+    changeProductQuantity: (details) => {
+        count = parseInt(details.count);
+        quantity = parseInt(details.quantity);
+
+        return new Promise((resolve, reject) => {
+            if (count == -1 && quantity == 1) {
+                db.get().collection(collections.CART_COLLECTION)
+                    .updateOne({ _id: new ObjectId(details.cart) },
+                        {
+                            $pull: { products: { item: new ObjectId(details.product) } }
+                        }
+                    )
+                    .then((response) => {
+                        resolve({ removeProduct: true })
+                    });
+            } else {
+                db.get().collection(collections.CART_COLLECTION)
+                    .updateOne({ _id: new ObjectId(details.cart), 'products.item': new ObjectId(details.product) },
+                        {
+                            $inc: { 'products.$.quantity': count }
+                        }
+                    ).then((response) => {
+                        resolve({ status: true });
+                    });
+            }
+        });
+    },
+
+    removeProductFromCart: (details) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collections.CART_COLLECTION)
+                .updateOne({ _id: new ObjectId(details.cart) },
+                    {
+                        $pull: { products: { item: new ObjectId(details.product) } }
+                    }
+                )
+                .then(async (response) => {
+                    resolve({ removeProduct: true });
+                });
+        });
     }
 };
+
+

@@ -15,17 +15,19 @@
                 <tbody>
                     {{#each products}}
                     <tr>
-                        <th scope="row">{{increment @index}}</th>
-                        <td><img src="{{this.image}}" alt="" width="100px" height="auto"></td>
-                        <td>{{this.name}}</td>
+                        <th scope=" row">{{ increment @index}}</th>
+                        <td><img src="{{this.product.image}}" alt="" width="100px" height="auto"></td>
+                        <td>{{this.product.name}}</td>
+                        <td>RS: {{this.product.price}}</td>
                         <td>
-                            <button class="btn btn-secondary me-3">-</button>
-                            0
-                            <button class="btn btn-secondary ms-3">+</button>
+                            <button class="btn btn-secondary me-3"
+                                onclick="changeQuantity('{{this._id}}', '{{this.product._id}}', -1)">-</button>
+                            <span id="{{this.product._id}}">{{this.quantity}}</span>
+                            <button class="btn btn-secondary ms-3"
+                                onclick="changeQuantity('{{this._id}}', '{{this.product._id}}', 1)">+</button>
                         </td>
-                        <td>RS: {{this.price}}</td>
                         <td>
-                            <a href="" class="btn btn-danger">Remove</a>
+                            <button class="btn btn-danger" onclick="removeProductFromCart('{{this._id}}', '{{this.product._id}}')">Remove</button>
                         </td>
                     </tr>
                     {{/each}}
