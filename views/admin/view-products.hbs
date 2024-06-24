@@ -1,5 +1,5 @@
 <section>
-    <div class="container mt-5">
+    <div class="container mt-5 mb-5">
         <div class="row">
             <div>
                 <a class="btn btn-success float-end" href="/admin/add-product" role="button">Add Products</a>
@@ -22,7 +22,7 @@
                     {{#each products}}
                     <tr>
                         <th scope="row">{{increment @index}}</th>
-                        <td><img src="{{this.image}}" alt="" height="50px"></td>
+                        <td><img src="{{this.image}}" alt="" height="auto" width="50px"></td>
                         <td>{{this.name}}</td>
                         <td>{{this.category}}</td>
                         <td>{{this.description}}</td>

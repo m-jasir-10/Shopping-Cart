@@ -94,7 +94,7 @@ module.exports = {
                     products: [productObj]
                 };
                 db.get().collection(collections.CART_COLLECTION).insertOne(cartObj)
-                    .then((response) => {
+                    .then(() => {
                         resolve();
                     });
             }
@@ -157,7 +157,6 @@ module.exports = {
             if (cart.length > 0) {
                 count = cart[0].totalQuantity;
             }
-            console.log(count);
             resolve(count);
         });
     },
@@ -202,7 +201,63 @@ module.exports = {
                     resolve({ removeProduct: true });
                 });
         });
-    }
+    },
+
+    getTotalAmount: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let totalPrice = await db.get().collection(collections.CART_COLLECTION).aggregate([
+                {
+                    $match: {
+                        user: new ObjectId(userId)
+                    }
+                },
+                {
+                    $unwind: '$products'
+                },
+                {
+                    $project: {
+                        item: '$products.item',
+                        quantity: '$products.quantity'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: collections.PRODUCT_COLLECTION,
+                        localField: 'item',
+                        foreignField: '_id',
+                        as: 'product'
+                    }
+                },
+                {
+                    $project: {
+                        item: 1,
+                        quantity: 1,
+                        product: {
+                            $arrayElemAt: ['$product', 0]
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        item: 1,
+                        quantity: 1,
+                        product: {
+                            _id: 1,
+                            price: { $toDouble: '$product.price' } 
+                        }
+                    }
+                },    
+                {
+                    $group: {
+                        _id: null,
+                        totalPrice: { $sum: { $multiply: ['$quantity', '$product.price'] } }
+                    }
+                }
+            ]).toArray();
+            resolve(totalPrice[0].totalPrice);
+        });
+    },
 };
+
 
 
