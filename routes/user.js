@@ -128,4 +128,9 @@ router.post('/place-order', async (req, res) => {
     });
 });
 
+router.get('/order-success', (req, res) => {
+    let user = req.session.user;
+    res.render('user/order-success', {user});
+});
+
 module.exports = router;
