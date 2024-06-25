@@ -49,7 +49,7 @@ router.post('/signup', (req, res) => {
     userHelpers.doSignup(req.body).then((response) => {
         if (response.status) {
             req.session.user = response.user;
-            req.session.userLoggedIn = true;
+            req.session.userLoggedIn = false;
             res.redirect('/login');
         } else {
             req.session.signupErr = response.message;
@@ -84,7 +84,7 @@ router.get('/logout', (req, res) => {
 router.get('/cart', verifyLogin, async (req, res) => {
     let user = req.session.user;
     let cartCount = null;
-    let products = await userHelpers.getCartProducts(user._id);
+    let products = await userHelpers.getCartProduct(user._id);
     let totalPrice = await userHelpers.getTotalAmount(user._id);
 
     if (user) {
@@ -102,7 +102,6 @@ router.get('/add-to-cart/:id', verifyLogin, (req, res) => {
 
 router.post('/change-product-quantity', (req, res) => {
     userHelpers.changeProductQuantity(req.body).then(async (response) => {
-        console.log(response);
         response.cartCount = await userHelpers.getCartCount(req.body.user);
         response.totalPrice = await userHelpers.getTotalAmount(req.body.user);
         res.json(response);
@@ -119,6 +118,14 @@ router.get('/place-order', verifyLogin, async (req, res) => {
     let user = req.session.user;
     let totalPrice = await userHelpers.getTotalAmount(user._id);
     res.render('user/place-order', { user, totalPrice });
+});
+
+router.post('/place-order', async (req, res) => {
+    let cartProducts = await userHelpers.getCartProductList(req.body.userId);
+    let totalPrice = await userHelpers.getTotalAmount(req.body.userId)
+    userHelpers.placeOrder(req.body, cartProducts, totalPrice).then((response) => {
+        res.json({status: true})
+    });
 });
 
 module.exports = router;

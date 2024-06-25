@@ -63,48 +63,6 @@ router.get('/edit-product/:id', async (req, res) => {
     res.render('admin/edit-product', { admin: true, product });
 });
 
-// router.post('/edit-product/:id', async (req, res) => {
-//   let productId = req.params.id;
-//   let productDetails = req.body;
-//   let image = req.files.image;
-
-//   if (image && image !== null) {
-//     let imagePath = '/images/products/' + productId + path.extname(image.name);
-//     let uploadPath = './public' + imagePath;
-//     image.mv(uploadPath, (err) => {
-//       if (err) {
-//         console.error("Error uploading image:", err);
-//         res.status(500).send("Error uploading image");
-//       } else {
-//         productHelpers.updateProductImage(productId, imagePath)
-//           .then(() => {
-//             productHelpers.updateProduct(productId, productDetails)
-//               .then(() => {
-//                 res.redirect('/admin');
-//               })
-//               .catch((err) => {
-//                 console.error("Error updating product:", err);
-//                 res.status(500).send("Error updating product");
-//               });
-//           })
-//           .catch((err) => {
-//             console.error("Error updating product image:", err);
-//             res.status(500).send("Error updating product image");
-//           });
-//       }
-//     });
-//   } else {
-//     productHelpers.updateProduct(productId, productDetails)
-//       .then(() => {
-//         res.redirect('/admin');
-//       })
-//       .catch((err) => {
-//         console.error("Error updating product:", err);
-//         res.status(500).send("Error updating product");
-//       });
-//   }
-// });
-
 router.post('/edit-product/:id', async (req, res) => {
     let productId = req.params.id;
     let productDetails = req.body;
