@@ -1,13 +1,30 @@
 $('#checkout-form').submit((event) => {
     event.preventDefault();
 
+    const name = document.getElementById('inputName');
+    const email = document.getElementById('inputEmail');
     const address = document.getElementById('inputAddress');
     const city = document.getElementById('inputCity');
     const state = document.getElementById('inputState');
+    const country = document.getElementById('inputCountry');
     const pincode = document.getElementById('inputPincode');
     const mobile = document.getElementById('inputMobile');
     const paymentMethod = document.querySelector('input[name="payment-method"]:checked');
     let isValid = true;
+
+    if (name.value === '') {
+        name.classList.add('is-invalid');
+        isValid = false;
+    } else {
+        name.classList.remove('is-invalid');
+    }
+
+    if (email.value === '') {
+        email.classList.add('is-invalid');
+        isValid = false;
+    } else {
+        email.classList.remove('is-invalid');
+    }
 
     if (address.value === '') {
         address.classList.add('is-invalid');
@@ -28,6 +45,13 @@ $('#checkout-form').submit((event) => {
         isValid = false;
     } else {
         state.classList.remove('is-invalid');
+    }
+
+    if (country.value === '') {
+        country.classList.add('is-invalid');
+        isValid = false;
+    } else {
+        country.classList.remove('is-invalid');
     }
 
     if (pincode.value === '' || pincode.value.length !== 6) {

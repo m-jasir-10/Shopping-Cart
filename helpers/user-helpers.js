@@ -2,6 +2,7 @@ const db = require('../config/connection');
 const bcrypt = require('bcrypt');
 const { ObjectId } = require('mongodb');
 const collections = require('../config/collections');
+const moment = require('moment');
 
 module.exports = {
     doSignup: (userData) => {
@@ -136,6 +137,7 @@ module.exports = {
                     }
                 }
             ]).toArray();
+            console.log(cartItems);
             resolve(cartItems);
         });
     },
@@ -154,10 +156,7 @@ module.exports = {
                 }
             ]).toArray();
 
-            if (cart.length > 0) {
-                count = cart[0].totalQuantity;
-            }
-            resolve(count);
+            resolve(cart.length > 0 ? cart[0].totalQuantity : 0);
         });
     },
 
@@ -197,7 +196,7 @@ module.exports = {
                         $pull: { products: { item: new ObjectId(details.product) } }
                     }
                 )
-                .then(async (response) => {
+                .then(async () => {
                     resolve({ removeProduct: true });
                 });
         });
@@ -256,9 +255,7 @@ module.exports = {
                 }
             ]).toArray();
             resolve(
-                totalPrice.length > 0 && totalPrice[0].totalPrice !== undefined
-                    ? totalPrice[0].totalPrice
-                    : 0
+                totalPrice.length > 0 ? totalPrice[0].totalPrice : 0
             )
 
         });
@@ -266,8 +263,43 @@ module.exports = {
 
     getCartProductList: (userId) => {
         return new Promise(async (resolve, reject) => {
-            let cart = await db.get().collection(collections.CART_COLLECTION).findOne({ user: new ObjectId(userId) });
-            resolve(cart.products);
+            let cartProducts = await db.get().collection(collections.CART_COLLECTION).aggregate([
+                {
+                    $match: { user: new ObjectId(userId) }
+                },
+                {
+                    $unwind: '$products'
+                },
+                {
+                    $lookup: {
+                        from: collections.PRODUCT_COLLECTION,
+                        localField: 'products.item',
+                        foreignField: '_id',
+                        as: 'product'
+                    }
+                },
+                {
+                    $replaceRoot: {
+                        newRoot: {
+                            $mergeObjects: [{ $arrayElemAt: ['$product', 0] }, '$products']
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        description: 1,
+                        category: 1,
+                        price: 1,
+                        quantity: 1,
+                        image: 1
+                    }
+                }
+            ]).toArray();
+            console.log('cartProducts');
+            console.log(cartProducts);
+            resolve(cartProducts);
         });
     },
 
@@ -275,29 +307,37 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let status = order['payment-method'] === 'COD' ? 'placed' : 'pending';
             let orderObj = {
+                userId: new ObjectId(order.userId),
+                name: order.name,
+                email: order.email,
                 deliveryDetails: {
                     address: order.address,
                     city: order.city,
                     state: order.state,
+                    country: order.country,
                     pincode: order.pincode,
-                    mobile: order.mobile
+                    mobile: order.mobile,
                 },
-                userId: new ObjectId(order.userId),
                 paymentMethod: order['payment-method'],
                 totalPrice: totalPrice,
                 products: products,
-                orderDate: new Date().toLocaleString(),
+                orderDate: moment().format('DD-MM-YYYY'),
+                orderTime: moment().format('hh:mm:ss A'),
                 status: status
             };
-            console.log(orderObj);
             db.get().collection(collections.ORDER_COLLECTION).insertOne(orderObj).then(() => {
                 db.get().collection(collections.CART_COLLECTION).deleteOne({ user: new ObjectId(order.userId) });
                 resolve();
             });
         });
+    },
+
+    getUserOrderDetails: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let orders = await db.get().collection(collections.ORDER_COLLECTION).find({ userId: new ObjectId(userId) }).toArray();
+            resolve(orders);
+        });
     }
-
-
 };
 
 

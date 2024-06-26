@@ -124,13 +124,19 @@ router.post('/place-order', async (req, res) => {
     let cartProducts = await userHelpers.getCartProductList(req.body.userId);
     let totalPrice = await userHelpers.getTotalAmount(req.body.userId)
     userHelpers.placeOrder(req.body, cartProducts, totalPrice).then((response) => {
-        res.json({status: true})
+        res.json({ status: true })
     });
 });
 
-router.get('/order-success', (req, res) => {
+router.get('/order-success', verifyLogin, (req, res) => {
     let user = req.session.user;
-    res.render('user/order-success', {user});
+    res.render('user/order-success', { user });
+});
+
+router.get('/view-orders', verifyLogin, async (req, res) => {
+    let user = req.session.user;
+    let orders = await userHelpers.getUserOrderDetails(user._id);
+    res.render('user/view-orders', { user, orders });
 });
 
 module.exports = router;

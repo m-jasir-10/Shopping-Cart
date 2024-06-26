@@ -1,0 +1,91 @@
+<section>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="text-center mb-4">Order Details</h2>
+                {{#if orders}}
+                {{#each orders}}
+                <div class="card mb-5">
+                    <div class="card-header p-3">
+                        <h5 class="mb-3"><strong>Order ID:</strong> {{this._id}}</h5>
+                        <p><strong>Date:</strong> {{this.orderDate}}</p>
+                        <p class="mb-2"><strong>Time:</strong> {{this.orderTime}}</p>
+                    </div>
+                    <div class="card-body">
+                        <h5>Products:</h5>
+                        <table class="table table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Product Name</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            {{#each this.products}}
+                            <tbody>
+                                <tr>
+                                    <td><img src="{{this.image}}" alt="" width="75px" height="auto"></td>
+                                    <td>{{this.name}}</td>
+                                    <td>{{this.quantity}}</td>
+                                    <td>{{this.price}}</td>
+                                </tr>
+                            </tbody>
+                            {{/each}}
+                        </table>
+                        <div class="row text-center mb-3 mt-4">
+                            <h5 class="col-md-4"><strong>Total Amount:</strong> Rs {{this.totalPrice}}</h5>
+                            <h5 class="col-md-4"><strong>Payment Method:</strong> {{this.paymentMethod}}</h5>
+                            <h5 class="col-md-4"><strong>Status:</strong> {{this.status}}</h5>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <h5>Delivery Address:</h5>
+                        <table class="table table-bordered">
+                                <tbody>
+                                        {{!-- <tr>
+                                            <th>Name:</th>
+                                            <td>{{this.name}}</td>
+                                        </tr> --}}
+                                        {{!-- <tr>
+                                            <th>Email:</th>
+                                            <td>{{this.email}}</td>
+                                        </tr> --}}
+                                        <tr>
+                                            <th>Address:</th>
+                                            <td>{{this.deliveryDetails.address}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>City:</th>
+                                            <td>{{this.deliveryDetails.city}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>State:</th>
+                                            <td>{{this.deliveryDetails.state}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Country:</th>
+                                            <td>{{this.deliveryDetails.country}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Pincode:</th>
+                                            <td>{{this.deliveryDetails.pincode}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Mobile:</th>
+                                            <td>{{this.deliveryDetails.mobile}}</td>
+                                        </tr>
+                                    </div>
+                                </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                {{/each}}
+                {{else}}
+                <p class="text-center">Order details not found.</p>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</section>

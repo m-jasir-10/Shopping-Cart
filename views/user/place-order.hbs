@@ -6,53 +6,73 @@
             </div>
             <div class="col-md-6 mt-4 mb-5 me-4">
                 <form id="checkout-form" action="" class="mb-3">
+                    <div class="col-md-12 mb-3" hidden>
+                        <label for="inputName" class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name" id="inputName" placeholder="Enter your name"
+                            value="{{user.name}}">
+                        <div class="invalid-feedback">Please enter a valid name.</div>
+                    </div>
+                    <div class="col-md-12 mb-3" hidden>
+                        <label for="inputEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" id="inputEmail"
+                            placeholder="Enter your email" value="{{user.email}}">
+                        <div class="invalid-feedback">Please enter a valid email.</div>
+                    </div>
                     <div class="col-md-12 mb-3">
                         <label for="inputAddress" class="form-label">Address</label>
                         <input type="text" class="form-control" name="address" id="inputAddress"
                             placeholder="Enter your address" value="143, ABC Street, XYZ Nagar">
                         <div class="invalid-feedback">Please enter a valid address.</div>
                     </div>
-                    <div class="col-md-12 mb-3">
-                        <label for="inputCity" class="form-label">Address</label>
-                        <input type="text" class="form-control" name="city" id="inputCity"
-                            placeholder="Enter your city" value="Kochi">
-                        <div class="invalid-feedback">Please enter a valid city.</div>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        <label for="inputState" class="form-label">State</label>
-                        <input type="text" class="form-control" name="state" id="inputState"
-                            placeholder="Enter your state" value="Kerala">
-                        <div class="invalid-feedback">Please enter a valid state.</div>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        <label for="inputPincode" class="form-label">Pincode</label>
-                        <input type="number" class="form-control" name="pincode" id="inputPincode"
-                            placeholder="Enter pincode" value="682001">
-                        <div class="invalid-feedback">Please enter a valid pincode.</div>
+                    <div class="row">                     
+                        <div class="col-md-6 mb-3">
+                            <label for="inputCity" class="form-label">City</label>
+                            <input type="text" class="form-control" name="city" id="inputCity"
+                                placeholder="Enter your city" value="Kochi">
+                            <div class="invalid-feedback">Please enter a valid city.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="inputPincode" class="form-label">Pincode</label>
+                            <input type="number" class="form-control" name="pincode" id="inputPincode"
+                                placeholder="Enter pincode" value="682001">
+                            <div class="invalid-feedback">Please enter a valid pincode.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="inputState" class="form-label">State</label>
+                            <input type="text" class="form-control" name="state" id="inputState"
+                                placeholder="Enter your state" value="Kerala">
+                            <div class="invalid-feedback">Please enter a valid state.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="inputCountry" class="form-label">Country</label>
+                            <input type="text" class="form-control" name="country" id="inputCountry"
+                                placeholder="Enter your country" value="India">
+                            <div class="invalid-feedback">Please enter a valid country.</div>
+                        </div>
                     </div>
                     <div class="col-md-12 mb-3">
                         <label for="inputMobile" class="form-label">Mobile No</label>
-                        <input type="number" class="form-control" name="mobile" id="inputMobile"
+                        <input type="tel" class="form-control" name="mobile" id="inputMobile"
                             placeholder="Enter your mobile no" value="9876543210">
                         <div class="invalid-feedback">Please enter a valid mobile number.</div>
                     </div>
-                    <div class="mb-3">
-                        <label hidden>UserId</label>
-                        <input type="text" class="form-control" name="userId" id=""
-                            placeholder="" value="{{user._id}}" hidden>
+
+                    <div class="col-md-12 mb-3" hidden>
+                        <label>UserId</label>
+                        <input type="text" class="form-control" name="userId" id="" placeholder="" value="{{user._id}}">
                     </div>
             </div>
             <div class="col-md-5 mt-4 mb-3">
                 <div class="border p-5">
                     <h4>Total Amount : Rs {{totalPrice}}</h4>
                     <hr>
-                    <h5 class="mb-3">Payment method</h5>
-
-                    <div class="form-check mb-3">
+                    <h5 class="mb-2">Payment method</h5>
+                    <div class="form-check mb-2">
                         <input class="form-check-input" type="radio" name="payment-method" id="codRadioBtn" value="COD">
                         <label class="form-check-label" for="codRadioBtn">
                             Cash on Delivery
                         </label>
+                        <div class="invalid-feedback"></div>
                     </div>
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="radio" name="payment-method" id="onlineRadioBtn"
