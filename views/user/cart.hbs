@@ -2,7 +2,7 @@
     <div class="container mt-5 mb-5">
         <div class="row">
             {{#if products}}
-            <table class="table table-bordered mt-2">
+            <table class="table table-bordered mt-2 text-center">
                 <thead>
                     <tr>
                         <th scope="col">No</th>
@@ -17,7 +17,7 @@
                     {{#each products}}
                     <tr>
                         <th scope=" row">{{ increment @index}}</th>
-                        <td><img src="{{this.product.image}}" alt="" width="50px" height="auto"></td>
+                        <td><img src="{{this.product.image}}" alt="" width="75px" height="auto"></td>
                         <td>{{this.product.name}}</td>
                         <td>RS: {{this.product.price}}</td>
                         <td>
@@ -36,7 +36,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="row float-end mb-5 mt-5 p-4 border">
+        <div class="row float-end mb-5 mt-5 p-4 border bg-light">
             <div class="col-md-12">
                 <h4 class="mb-3">Total : Rs <span id="total-price">{{totalPrice}}</span></h4>
                 <hr>
@@ -44,7 +44,7 @@
             </div>
         </div>
         {{else}}
-        <h4 class="text-danger text-center"><strong>Cart is empty now...</strong></h4>
+        <h1 class="text-danger text-center mb-3"><strong>Cart is empty now...</strong></h1>
         <p class="text-danger text-center">Add products to the cart</p>
         <div class="text-center mb-5 mt-3">
             <a href="/" class=" btn btn-primary"><strong>Add products</strong></a>

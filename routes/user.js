@@ -77,7 +77,8 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-    req.session.destroy();
+    req.session.user = null;
+    req.session.userLoggedIn = false;
     res.redirect('/');
 });
 
@@ -135,8 +136,27 @@ router.get('/order-success', verifyLogin, (req, res) => {
 
 router.get('/view-orders', verifyLogin, async (req, res) => {
     let user = req.session.user;
+    let cartCount = await userHelpers.getCartCount(user._id);
     let orders = await userHelpers.getUserOrderDetails(user._id);
-    res.render('user/view-orders', { user, orders });
+    res.render('user/view-orders', { user, orders, cartCount });
+});
+
+router.get('/profile', verifyLogin, (req, res) => {
+    let user = req.session.user;
+    res.render('user/profile', { user });
+});
+
+router.post('/update-profile/:id', async (req, res) => {
+    let userId = req.params.id;
+    let response = await userHelpers.updateProfile(userId, req.body);
+    if (response.status) {
+        req.session.user.name = req.body.name;
+        req.session.user.email = req.body.email;
+        res.render('user/profile', { user: req.session.user, message: response.message });
+    } else {
+        res.render('user/profile', { user: req.session.user, error: response.message });
+    }
+
 });
 
 module.exports = router;

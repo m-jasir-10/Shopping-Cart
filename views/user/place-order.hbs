@@ -5,7 +5,7 @@
                 <h2 class="text-center mb-3">Enter Delivery Details</h2>
             </div>
             <div class="col-md-6 mt-4 mb-5 me-4">
-                <form id="checkout-form" action="" class="mb-3">
+                <form id="checkout-form" action="" class="mb-3 needs-validation" novalidate>
                     <div class="col-md-12 mb-3" hidden>
                         <label for="inputName" class="form-label">Name</label>
                         <input type="text" class="form-control" name="name" id="inputName" placeholder="Enter your name"
@@ -24,7 +24,7 @@
                             placeholder="Enter your address" value="143, ABC Street, XYZ Nagar">
                         <div class="invalid-feedback">Please enter a valid address.</div>
                     </div>
-                    <div class="row">                     
+                    <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="inputCity" class="form-label">City</label>
                             <input type="text" class="form-control" name="city" id="inputCity"
@@ -62,8 +62,8 @@
                         <input type="text" class="form-control" name="userId" id="" placeholder="" value="{{user._id}}">
                     </div>
             </div>
-            <div class="col-md-5 mt-4 mb-3">
-                <div class="border p-5">
+            <div class="col-md-5 mt-5 mb-3">
+                <div class="border p-5 bg-light">
                     <h4>Total Amount : Rs {{totalPrice}}</h4>
                     <hr>
                     <h5 class="mb-2">Payment method</h5>
@@ -72,7 +72,7 @@
                         <label class="form-check-label" for="codRadioBtn">
                             Cash on Delivery
                         </label>
-                        <div class="invalid-feedback"></div>
+                        <div class="invalid-feedback">Please select a payment method.</div>
                     </div>
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="radio" name="payment-method" id="onlineRadioBtn"

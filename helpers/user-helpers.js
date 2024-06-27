@@ -33,6 +33,33 @@ module.exports = {
         })
     },
 
+    updateProfile: (userId, userData) => {
+        return new Promise(async (resolve, reject) => {
+            let updateObject = {
+                $set: {
+                    name: userData.name,
+                    email: userData.email
+                }
+            };
+
+            if (userData.password) {
+                let hashedPassword = await bcrypt.hash(userData.password, 10);
+                updateObject.$set.password = hashedPassword;
+            }
+
+            let response = await db.get().collection(collections.USER_COLLECTION)
+                .updateOne({ _id: new ObjectId(userId) },
+                    updateObject
+                );
+
+            if (response.modifiedCount > 0) {
+                resolve({ status: true, message: 'Profile updated successfully' });
+            } else {
+                resolve({ status: false, message: 'Failed to update profile' });
+            }
+        });
+    },
+
     doLogin: (userData) => {
         return new Promise(async (resolve, reject) => {
             if (!userData.email || !userData.password) {
@@ -297,8 +324,6 @@ module.exports = {
                     }
                 }
             ]).toArray();
-            console.log('cartProducts');
-            console.log(cartProducts);
             resolve(cartProducts);
         });
     },

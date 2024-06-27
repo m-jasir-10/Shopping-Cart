@@ -1,7 +1,7 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/admin">Admin Panel</a>
+            <a class="navbar-brand" href="/admin"><strong>Admin Panel</strong></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -21,10 +21,10 @@
                 </ul>
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" style="min-width: 100px;">
+                        aria-expanded="false">
                         Accounts
                     </button>
-                    <ul class="dropdown-menu" style="min-width: 100px;">
+                    <ul class="dropdown-menu" style="min-width: auto; width:100%;">
                         <li><a class="dropdown-item" href="/login">Login</a></li>
                     </ul>
                 </div>
@@ -32,3 +32,30 @@
         </div>
     </nav>
 </header>
+
+<style>
+    .navbar {
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand {
+        color: #333333;
+    }
+
+    .navbar-nav .nav-link {
+        color: #333333;
+    }
+
+    .dropdown-menu {
+        background-color: #ffffff;
+    }
+
+    .dropdown-item {
+        color: #1f1a1a;
+    }
+
+    .dropdown-item:hover {
+        background-color: #e7dfdf;
+    }
+</style>

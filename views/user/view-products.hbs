@@ -1,21 +1,67 @@
 <section>
     <div class="container mt-5 mb-5">
         <div class="row">
+            {{#if products}}
             {{#each products}}
-            <div class="col-12 col-sm-6 col-md-3 mt-3 mb-3">
-                <div class="card" style="width: auto;">
-                    <img src="{{this.image}}" class="card-img-top img-fluid" width="259px" height="259px">
-                    <div class="card-body">
-                        <h5 class="card-title">{{this.name}}</h5>
-                        <p class="card-text">{{this.description}}</p>
-                        <p class="card-text"> RS: {{this.price}}</p>
-                        <button class="btn btn-primary" onclick="addToCart('{{this._id}}','{{../user._id}}')">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3 mb-3">
+                <div class="card h-100" style="width: auto;">
+                    <img src="{{this.image}}" class="card-img-top img-fluid" alt="{{this.name}}"
+                        style="object-fit: cover; height: 259px;">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-truncate" data-toggle="tooltip" data-placement="bottom"
+                            title="{{this.name}}">{{this.name}}</h5>
+                        <p class="card-text" data-toggle="tooltip" data-placement="bottom" title="{{this.description}}"></p>
+                            {{this.description}}</p>
+                        <p class="card-text font-weight-bold">RS: {{this.price}}</p>
+                        <button class="btn btn-primary mt-auto" onclick="addToCart('{{this._id}}','{{../user._id}}')">
                             Add to cart
                         </button>
                     </div>
                 </div>
             </div>
             {{/each}}
+            {{else}}
+            <div class="col-md-12">
+                <div data-aos="fade-down" class="card text-center p-4" style="width: auto;">
+                    <h2 class="text-danger">No Products for Sell!</h2>
+                    <p class="text-warning">This may be a server issue. Please wait until restart.</p>
+                </div>
+            </div>
+            {{/if}}
         </div>
     </div>
 </section>
+
+<style>
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .card-text {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        font-size: 1rem;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+</style>
