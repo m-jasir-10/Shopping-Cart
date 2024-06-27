@@ -3,11 +3,31 @@ const productHelpers = require('../helpers/product-helpers');
 const router = express.Router();
 const path = require('path');
 
+const redirectHome = (req, res, next) => {
+    if (req.session.adminLoggedIn) {
+        res.redirect('/admin');
+    } else {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+        next();
+    }
+};
+
+const verifyLogin = (req, res, next) => {
+    if (req.session.adminLoggedIn) {
+        next();
+    } else {
+        res.redirect('/admin/login');
+    }
+};
+
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', verifyLogin, function (req, res, next) {
     productHelpers.getAllProducts()
         .then((products) => {
-            res.render('admin/view-products.hbs', { admin: true, products });
+            let admin = req.session.admin;
+            res.render('admin/view-products.hbs', { admin, products });
         })
         .catch((err) => {
             console.error("Error fetching products:", err);
@@ -15,8 +35,29 @@ router.get('/', function (req, res, next) {
         });
 });
 
-router.get('/add-product', (req, res) => {
-    res.render('admin/add-product', { admin: true });
+router.get('/login', redirectHome, (req, res) => {
+    res.render('admin/admin-login', { admin: true, loginErr: req.session.loginErr });
+    req.session.loginErr = null;
+});
+
+router.post('/login', (req, res) => {
+    productHelpers.doLogin(req.body).then((response) => {
+        console.log('response' + response);
+        if (response.status) {
+            console.log('1' + response.admin)
+            req.session.admin = response.admin;
+            req.session.adminLoggedIn = true;
+            res.redirect('/admin');
+        } else {
+            req.session.loginErr = response.message;
+            res.redirect('/admin/login');
+        }
+    });
+});
+
+router.get('/add-product', verifyLogin, (req, res) => {
+    let admin = req.session.admin;
+    res.render('admin/add-product', { admin });
 });
 
 router.post('/add-product', (req, res) => {
@@ -30,7 +71,8 @@ router.post('/add-product', (req, res) => {
                 if (!err) {
                     productHelpers.updateProductImage(productId, imagePath)
                         .then(() => {
-                            res.render('admin/add-product', { admin: true, message: "Product added successfully!" });
+                            let admin = req.session.admin;
+                            res.render('admin/add-product', { admin, message: "Product added successfully!" });
                         })
                         .catch((err) => {
                             console.error("Error updating product image:", err);
@@ -48,7 +90,7 @@ router.post('/add-product', (req, res) => {
         });
 });
 
-router.get('/delete-product/', (req, res) => {
+router.get('/delete-product/', verifyLogin, (req, res) => {
     let productId = req.query.id;
     console.log(productId);
     productHelpers.deleteProduct(productId).then((response) => {
@@ -57,10 +99,11 @@ router.get('/delete-product/', (req, res) => {
     })
 });
 
-router.get('/edit-product/:id', async (req, res) => {
+router.get('/edit-product/:id', verifyLogin, async (req, res) => {
+    let admin = req.session.admin;
     let productId = req.params.id;
     let product = await productHelpers.getProductDetails(productId);
-    res.render('admin/edit-product', { admin: true, product });
+    res.render('admin/edit-product', { admin, product });
 });
 
 router.post('/edit-product/:id', async (req, res) => {
@@ -105,5 +148,9 @@ router.post('/edit-product/:id', async (req, res) => {
     }
 });
 
+router.get('/all-orders', verifyLogin, (req, res) => {
+    let admin = req.session.admin;
+    res.render('admin/all-orders', { admin });
+});
 
 module.exports = router;

@@ -76,12 +76,12 @@ module.exports = {
                             resolve({ status: true, user });
                         } else {
                             console.log('login failed');
-                            resolve({ status: false, message: 'Invalid email or password' });
+                            resolve({ status: false, message: 'Try Again!! Invalid password.' });
                         }
                     })
             } else {
                 console.log('login failed');
-                resolve({ status: false, message: 'Invalid email or password' });
+                resolve({ status: false, message: 'Invalid email' });
             }
         });
     },
