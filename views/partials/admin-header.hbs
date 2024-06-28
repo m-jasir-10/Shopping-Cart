@@ -22,14 +22,14 @@
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                        {{#if admin}}
+                        {{#if admin.name}}
                         {{admin.name}}
                         {{else}}
                         Account
                         {{/if}}
                     </button>
                     <ul class="dropdown-menu" style="min-width: auto; width:100%;">
-                        {{#if admin}}
+                        {{#if admin.name}}
                         <li><a class="dropdown-item" href="/admin/profile">Profile</a></li>
                         <li><a class="dropdown-item" href="/admin/logout">Logout</a></li>
                         {{else}}

@@ -2,7 +2,7 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-6 bg-light m-auto p-5">
-                <h2 class="text-center mb-3">Login</h2>
+                <h2 class="text-center mb-3">Admin Login</h2>
                 {{#if loginErr}}
                 <div class="alert alert-danger" role="alert">
                     {{loginErr}}
@@ -40,14 +40,3 @@
         </div>
     </div>
 </section>
-
-<script>
-    function togglePassword() {
-        var passwordInput = document.getElementById('inputPassword');
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-        } else {
-            passwordInput.type = 'password';
-        }
-    }
-</script>

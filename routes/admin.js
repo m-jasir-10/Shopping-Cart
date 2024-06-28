@@ -30,8 +30,7 @@ router.get('/', verifyLogin, function (req, res, next) {
             res.render('admin/view-products.hbs', { admin, products });
         })
         .catch((err) => {
-            console.error("Error fetching products:", err);
-            res.status(500).send("Error fetching products");
+            console.log("Error fetching products:", err);
         });
 });
 
@@ -44,7 +43,6 @@ router.post('/login', (req, res) => {
     productHelpers.doLogin(req.body).then((response) => {
         console.log('response' + response);
         if (response.status) {
-            console.log('1' + response.admin)
             req.session.admin = response.admin;
             req.session.adminLoggedIn = true;
             res.redirect('/admin');
@@ -53,6 +51,12 @@ router.post('/login', (req, res) => {
             res.redirect('/admin/login');
         }
     });
+});
+
+router.get('/logout', (req, res) => {
+    req.session.admin = null;
+    req.session.adminLoggedIn = false;
+    res.redirect('/admin');
 });
 
 router.get('/add-product', verifyLogin, (req, res) => {
@@ -75,18 +79,15 @@ router.post('/add-product', (req, res) => {
                             res.render('admin/add-product', { admin, message: "Product added successfully!" });
                         })
                         .catch((err) => {
-                            console.error("Error updating product image:", err);
-                            res.status(500).send("Error updating product image");
+                            console.log("Error updating product image:", err);
                         });
                 } else {
-                    console.error("Error uploading image:", err);
-                    res.status(500).send("Error uploading image");
+                    console.log("Error uploading image:", err);
                 }
             });
         })
         .catch((err) => {
-            console.error("Error adding product:", err);
-            res.status(500).send("Error adding product");
+            console.log("Error adding product:", err);
         });
 });
 
@@ -94,7 +95,6 @@ router.get('/delete-product/', verifyLogin, (req, res) => {
     let productId = req.query.id;
     console.log(productId);
     productHelpers.deleteProduct(productId).then((response) => {
-        console.log(response);
         res.redirect('/admin');
     })
 });
@@ -116,8 +116,7 @@ router.post('/edit-product/:id', async (req, res) => {
         let uploadPath = './public' + imagePath;
         image.mv(uploadPath, (err) => {
             if (err) {
-                console.error("Error uploading image:", err);
-                res.status(500).send("Error uploading image");
+                console.log("Error uploading image:", err);
             } else {
                 productHelpers.updateProductImage(productId, imagePath)
                     .then(() => {
@@ -126,13 +125,11 @@ router.post('/edit-product/:id', async (req, res) => {
                                 res.redirect('/admin');
                             })
                             .catch((err) => {
-                                console.error("Error updating product:", err);
-                                res.status(500).send("Error updating product");
+                                console.log("Error updating product:", err);
                             });
                     })
                     .catch((err) => {
-                        console.error("Error updating product image:", err);
-                        res.status(500).send("Error updating product image");
+                        console.log("Error updating product image:", err);
                     });
             }
         });
@@ -142,15 +139,22 @@ router.post('/edit-product/:id', async (req, res) => {
                 res.redirect('/admin');
             })
             .catch((err) => {
-                console.error("Error updating product:", err);
-                res.status(500).send("Error updating product");
+                console.log("Error updating product:", err);
             });
     }
 });
 
 router.get('/all-orders', verifyLogin, (req, res) => {
     let admin = req.session.admin;
-    res.render('admin/all-orders', { admin });
+    productHelpers.getAllOrderDetails().then((orders) => {
+        res.render('admin/all-orders', { admin, orders });
+    });
+});
+
+router.post('/change-order-status', (req, res) => {
+    productHelpers.changeOrderStatus(req.body.orderId, req.body.status).then((response) => {
+        res.json(response);
+    })
 });
 
 module.exports = router;

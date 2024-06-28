@@ -11,7 +11,7 @@ module.exports = {
                 email: '$2b$10$xqMJOC2BXeNn.4htqqlgkOKmyzHgu4Dv9K1sin0cYSG7VzqR1tzoS',
                 password: '$2b$10$5ys.vSbeXx.So.IpmWC/0.PEt3mzg1AUb6LmyfrEgNnMmJZooEi0O'
             };
-            
+
             const adminDataExist = await db.get().collection(collections.ADMIN_COLLECTION).findOne({});
 
             if (adminDataExist) {
@@ -108,6 +108,31 @@ module.exports = {
                     }
                 }).then((response) => {
                     resolve();
+                });
+        });
+    },
+
+    getAllOrderDetails: () => {
+        return new Promise(async (resolve, reject) => {
+            let orders = await db.get().collection(collections.ORDER_COLLECTION).find({}).toArray();
+            resolve(orders);
+        });
+    },
+
+    changeOrderStatus: (orderId, status) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collections.ORDER_COLLECTION)
+                .updateOne(
+                    { _id: new ObjectId(orderId) },
+                    { $set: { status: status } }
+                )
+                .then((response) => {
+                    console.log(response)
+                    if (response.modifiedCount > 0) {
+                        resolve({ status: true, message: 'Order status updated successfully' });
+                    } else {
+                        resolve({ status: false, message: 'Error updating order status' });
+                    }
                 });
         });
     }

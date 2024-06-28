@@ -36,7 +36,7 @@ router.get('/', async (req, res, next) => {
             res.render('user/view-products.hbs', { products, user, cartCount });
         })
         .catch((error) => {
-            console.error(error);
+            console.log(error);
         });
 });
 

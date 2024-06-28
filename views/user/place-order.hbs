@@ -4,7 +4,7 @@
             <div class="col-md-12">
                 <h2 class="text-center mb-3">Enter Delivery Details</h2>
             </div>
-            <div class="col-md-6 mt-4 mb-5 me-4">
+            <div class="col-md-6 mt-4 mb-5 me-4 bg-light p-4">
                 <form id="checkout-form" action="" class="mb-3 needs-validation" novalidate>
                     <div class="col-md-12 mb-3" hidden>
                         <label for="inputName" class="form-label">Name</label>
@@ -56,13 +56,12 @@
                             placeholder="Enter your mobile no" value="9876543210">
                         <div class="invalid-feedback">Please enter a valid mobile number.</div>
                     </div>
-
                     <div class="col-md-12 mb-3" hidden>
                         <label>UserId</label>
                         <input type="text" class="form-control" name="userId" id="" placeholder="" value="{{user._id}}">
                     </div>
             </div>
-            <div class="col-md-5 mt-5 mb-3">
+            <div class="col-md-5 mt-4 mb-3">
                 <div class="border p-5 bg-light">
                     <h4>Total Amount : Rs {{totalPrice}}</h4>
                     <hr>
