@@ -1,8 +1,8 @@
 <section>
-    <div class="container mt-5 mb-5">
-        <div class="row">
+    <div class="container mb-5">
+        <div class="row bg-light p-5 m-5">
             {{#if products}}
-            <table class="table table-bordered mt-2 text-center">
+            <table class="table table-bordered text-center table-hover">
                 <thead>
                     <tr>
                         <th scope="col">No</th>
@@ -36,13 +36,22 @@
                 </tbody>
             </table>
         </div>
-        <div class="row float-end mb-5 mt-5 p-4 border bg-light">
-            <div class="col-md-12">
+
+        {{!-- <div class="row mb-5 bg-light">
+            <div class="col-md-12 bg-light m-5 float-end">
                 <h4 class="mb-3">Total : Rs <span id="total-price">{{totalPrice}}</span></h4>
                 <hr>
-                <a href="/place-order" class="btn btn-success" style="width: 100%;">Place Order</a>
+                <a href="/place-order" class="btn btn-success" style="width:100%;">Place Order</a>
+            </div>
+        </div> --}}
+        <div class="row mb-5 justify-content-end">
+            <div class="col-md-4 bg-light p-5" style="max-width: 400px;">
+                <h4 class="mb-4 text-center">Total : Rs <span id="total-price">{{totalPrice}}</span></h4>
+                <hr>
+                <a href="/place-order" class="btn btn-success mt-2" style="width:100%;">Place Order</a>
             </div>
         </div>
+
         {{else}}
         <h1 class="text-danger text-center mb-3"><strong>Cart is empty now...</strong></h1>
         <p class="text-danger text-center">Add products to the cart</p>
@@ -52,3 +61,10 @@
         {{/if}}
     </div>
 </section>
+
+<style>
+    .table th,
+    .table td {
+        vertical-align: middle;
+    }
+</style>

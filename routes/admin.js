@@ -157,4 +157,20 @@ router.post('/change-order-status', (req, res) => {
     })
 });
 
+router.get('/all-users', verifyLogin, (req, res) => {
+    let admin = req.session.admin;
+    productHelpers.getAllUsers().then((users) => {
+        res.render('admin/all-users', { admin, users })
+    });
+});
+
+router.get('/view-user-orders/:id', verifyLogin, async (req, res) => {
+    let admin = req.session.admin;
+    let userId = req.params.id;
+    let userOrders = await productHelpers.getUserOrders(userId);
+
+    let userInfo = await productHelpers.getUserDetails(userId);
+    res.render('admin/user-orders', { admin, userOrders, userInfo });
+});
+
 module.exports = router;

@@ -2,33 +2,19 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-12">
-                <h2 class="text-center mb-4 bg-light p-4">All Order Details</h2>
-                {{#if orders}}
-                {{#each orders}}
+                <h2 class="text-center mb-4 p-4 border bg-light">User Details</h2>
+                {{#if userOrders}}
+                {{#each userOrders}}
                 <div class="card mb-5">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div>
-                            <h5 class="mb-2"><strong>Order ID:</strong> {{this._id}}</h5>
-                            <p class="mb-2"><strong>Date:</strong> {{this.orderDate}}</p>
-                            <p><strong>Time:</strong> {{this.orderTime}}</p>
-                        </div>
-                            <div class="status-dropdown">
-                                <h5 class="mb-3 m-auto"><strong>Status: </strong>{{this.status}}</h5>
-                                <select onchange="changeStatusOption('{{this._id}}')" id="{{this._id}}"
-                                    class="form-control m-auto text-center">
-                                    <option selected disabled>Change status</option>
-                                    <option value="placed">Placed</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="canceled">Canceled</option>
-                                    <option value="shipped">Shipped</option>
-                                    <option value="delivered">Delivered</option>
-                                </select>
-                            </div>
+                    <div class="card-header">
+                        <h5 class="mb-2"><strong>Order ID:</strong> {{this._id}}</h5>
+                        <p class="mb-2"><strong>Date:</strong> {{this.orderDate}}</p>
+                        <p><strong>Time:</strong> {{this.orderTime}}</p>
                     </div>
                     <div class="card-body">
                         <h5 class="mb-4">Products:</h5>
                         <div class="table-responsive">
-                            <table class="table table-bordered text-center table-hover">
+                            <table class="table table-bordered table-hover text-center">
                                 <thead>
                                     <tr>
                                         <th>Image</th>
@@ -40,8 +26,7 @@
                                 <tbody>
                                     {{#each this.products}}
                                     <tr>
-                                        <td><img src="{{this.image}}" alt="{{this.name}}" width="75px" height="auto">
-                                        </td>
+                                        <td><img src="{{this.image}}" alt="{{this.name}}" width="75px" height="auto"></td>
                                         <td>{{this.name}}</td>
                                         <td>{{this.quantity}}</td>
                                         <td>{{this.price}}</td>
@@ -57,13 +42,10 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <h5 class="mb-4 mt-2">User Information:</h5>
+                        <h5 class="mb-4 mt-2">Delivery Address:</h5>
                         <table class="table table-bordered">
                             <tbody>
-                                <tr>
-                                    <th>Name:</th>
-                                    <td>{{this.name}}</td>
-                                </tr>
+
                                 <tr>
                                     <th>Address:</th>
                                     <td>{{this.deliveryDetails.address}}</td>
@@ -85,10 +67,6 @@
                                     <td>{{this.deliveryDetails.pincode}}</td>
                                 </tr>
                                 <tr>
-                                    <th>Email:</th>
-                                    <td>{{this.email}}</td>
-                                </tr>
-                                <tr>
                                     <th>Mobile:</th>
                                     <td>{{this.deliveryDetails.mobile}}</td>
                                 </tr>
@@ -108,24 +86,6 @@
 <style>
     .card-header {
         border-bottom: 1px solid #e9ecef;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .status-dropdown select {
-        width: 150px;
-        padding: 8px 12px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        background-color: #b4c0ce;
-        color: #040505;
-        font-size: 16px;
-    }
-
-    .status-dropdown select {
-        margin-top: 5px;
-        width: 150px;
     }
 
     .table th,

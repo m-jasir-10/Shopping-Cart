@@ -156,7 +156,6 @@ router.post('/update-profile/:id', async (req, res) => {
     } else {
         res.render('user/profile', { user: req.session.user, error: response.message });
     }
-
 });
 
 module.exports = router;

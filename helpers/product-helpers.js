@@ -114,7 +114,7 @@ module.exports = {
 
     getAllOrderDetails: () => {
         return new Promise(async (resolve, reject) => {
-            let orders = await db.get().collection(collections.ORDER_COLLECTION).find({}).toArray();
+            let orders = await db.get().collection(collections.ORDER_COLLECTION).find().toArray();
             resolve(orders);
         });
     },
@@ -134,6 +134,27 @@ module.exports = {
                         resolve({ status: false, message: 'Error updating order status' });
                     }
                 });
+        });
+    },
+
+    getAllUsers: () => {
+        return new Promise(async (resolve, reject) => {
+            let users = await db.get().collection(collections.USER_COLLECTION).find().toArray();
+            resolve(users);
+        });
+    },
+
+    getUserOrders: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let userOrders = await db.get().collection(collections.ORDER_COLLECTION).find({userId: new ObjectId(userId)}).toArray();
+            resolve(userOrders);
+        });
+    },
+
+    getUserDetails: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let userInfo = await db.get().collection(collections.USER_COLLECTION).findOne({_id: new ObjectId(userId)});
+            resolve(userInfo);
         });
     }
 };
