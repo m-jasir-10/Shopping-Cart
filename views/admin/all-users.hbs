@@ -1,7 +1,8 @@
 <section>
-    <div class="container mt-5 mb-5 bg-light p-5">
-        <div class="row">
-            <h2 class="text-center mb-5">All User Details</h2>
+    <div class="container mt-5 mb-5">
+        <h1 class="text-center mb-2">All User Details</h1>
+        <p class="text-center mb-5 fs-4">Total Users: {{usersCount}}</p>
+        <div class="row bg-light p-5">
             {{#if users}}
             <table class="col-md-12 table table-bordered table-hover text-center">
                 <thead class="">
@@ -9,7 +10,6 @@
                         <th scope="col">No</th>
                         <th scope="col">Name</th>
                         <th scope="col">Email</th>
-                        <th scope="col">UserId</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -19,7 +19,6 @@
                         <th scope="row">{{ increment @index}}</th>
                         <td>{{this.name}}</td>
                         <td>{{this.email}}</td>
-                        <td>{{this._id}}</td>
                         <td><a href="/admin/view-user-orders/{{this._id}}" class="btn btn-primary">View orders</a></td>
                     </tr>
                     {{/each}}

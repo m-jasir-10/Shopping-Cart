@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const productHelpers = require('../helpers/product-helpers');
 const userHelpers = require('../helpers/user-helpers');
+const collections = require('../config/collections');
+const { ObjectId } = require('mongodb');
+const db = require('../config/connection');
 
 const redirectHome = (req, res, next) => {
     if (req.session.userLoggedIn) {
@@ -26,18 +29,15 @@ const verifyLogin = (req, res, next) => {
 router.get('/', async (req, res, next) => {
     let user = req.session.user;
     let cartCount = null;
+    let ordersCount = await userHelpers.getOrdersCount(user._id);
 
     if (user) {
         cartCount = await userHelpers.getCartCount(user._id);
     }
-
     productHelpers.getAllProducts()
         .then((products) => {
-            res.render('user/view-products.hbs', { products, user, cartCount });
+            res.render('user/view-products.hbs', { products, user, cartCount, ordersCount });
         })
-        .catch((error) => {
-            console.log(error);
-        });
 });
 
 router.get('/signup', redirectHome, (req, res) => {
@@ -84,15 +84,11 @@ router.get('/logout', (req, res) => {
 
 router.get('/cart', verifyLogin, async (req, res) => {
     let user = req.session.user;
-    let cartCount = null;
     let products = await userHelpers.getCartProduct(user._id);
     let totalPrice = await userHelpers.getTotalAmount(user._id);
-
-    if (user) {
-        cartCount = await userHelpers.getCartCount(user._id);
-    }
-
-    res.render('user/cart', { user, products, cartCount, totalPrice });
+    let ordersCount = await userHelpers.getOrdersCount(user._id);
+    let cartCount = await userHelpers.getCartCount(user._id);
+    res.render('user/cart', { user, products, cartCount, totalPrice, ordersCount });
 });
 
 router.get('/add-to-cart/:id', verifyLogin, (req, res) => {
@@ -101,7 +97,7 @@ router.get('/add-to-cart/:id', verifyLogin, (req, res) => {
     })
 });
 
-router.post('/change-product-quantity', (req, res) => {
+router.post('/change-product-quantity', verifyLogin, (req, res) => {
     userHelpers.changeProductQuantity(req.body).then(async (response) => {
         response.cartCount = await userHelpers.getCartCount(req.body.user);
         response.totalPrice = await userHelpers.getTotalAmount(req.body.user);
@@ -110,45 +106,75 @@ router.post('/change-product-quantity', (req, res) => {
 });
 
 router.post('/remove-product-from-cart', verifyLogin, (req, res) => {
-    userHelpers.removeProductFromCart(req.body).then((response) => {
-        res.json(response);
-    });
+    let userId = req.body.user;
+    let productId = req.body.product;
+    let cartId = req.body.cart;
+    db.get().collection(collections.CART_COLLECTION)
+        .updateOne({ _id: new ObjectId(cartId) },
+            {
+                $pull: { products: { item: new ObjectId(productId) } }
+            }
+        )
+        .then(async (response) => {
+            let cartCount = await userHelpers.getCartCount(userId);
+            let totalPrice = await userHelpers.getTotalAmount(userId);
+            res.json({ removeProduct: true, cartCount, totalPrice });
+        });
 });
 
 router.get('/place-order', verifyLogin, async (req, res) => {
     let user = req.session.user;
+    let cartCount = await userHelpers.getCartCount(user._id);
+    let ordersCount = await userHelpers.getOrdersCount(user._id);
     let totalPrice = await userHelpers.getTotalAmount(user._id);
-    res.render('user/place-order', { user, totalPrice });
+    res.render('user/place-order', { user, totalPrice, cartCount, ordersCount });
 });
 
 router.post('/place-order', async (req, res) => {
+    if (req.body.pincode.length !== 6) {
+        return res.json({ status: false, message: "Pincode must contain 6 digits" });
+    }
+
+    if (req.body.mobile.length !== 10) {
+        return res.json({ status: false, message: "Mobile number must contain 10 digits" });
+    }
+
     let cartProducts = await userHelpers.getCartProductList(req.body.userId);
     let totalPrice = await userHelpers.getTotalAmount(req.body.userId)
+
+    if (cartProducts.length === 0) {
+        return res.json({ status: false, message: "Your cart is empty. Add products to cart before placing an order." });
+    }
+
     userHelpers.placeOrder(req.body, cartProducts, totalPrice).then((response) => {
-        res.json({ status: true })
+        return res.json({ status: true, message: 'Your order has been placed successfully' })
     });
 });
 
-router.get('/order-success', verifyLogin, (req, res) => {
+router.get('/order-success', verifyLogin, async (req, res) => {
     let user = req.session.user;
-    res.render('user/order-success', { user });
+    let cartCount = await userHelpers.getCartCount(user._id);
+    let ordersCount = await userHelpers.getOrdersCount(user._id);
+    res.render('user/order-success', { user, cartCount, ordersCount });
 });
 
 router.get('/view-orders', verifyLogin, async (req, res) => {
     let user = req.session.user;
     let cartCount = await userHelpers.getCartCount(user._id);
     let orders = await userHelpers.getUserOrderDetails(user._id);
-    res.render('user/view-orders', { user, orders, cartCount });
+    let ordersCount = await userHelpers.getOrdersCount(user._id);
+    res.render('user/view-orders', { user, orders, cartCount, ordersCount });
 });
 
-router.get('/profile', verifyLogin, (req, res) => {
+router.get('/profile', verifyLogin, async (req, res) => {
     let user = req.session.user;
-    res.render('user/profile', { user });
+    let cartCount = await userHelpers.getCartCount(user._id);
+    let ordersCount = await userHelpers.getOrdersCount(user._id);
+    res.render('user/profile', { user, cartCount, ordersCount });
 });
 
-router.post('/update-profile/:id', async (req, res) => {
-    let userId = req.params.id;
-    let response = await userHelpers.updateProfile(userId, req.body);
+router.post('/update-profile', verifyLogin, async (req, res) => {
+    let response = await userHelpers.updateProfile(req.body);
     if (response.status) {
         req.session.user.name = req.body.name;
         req.session.user.email = req.body.email;

@@ -22,7 +22,7 @@ module.exports = {
 
             let user = await db.get().collection(collections.USER_COLLECTION).findOne({ email: userData.email });
             if (user) {
-                resolve({ status: false, message: 'Email already exists' });
+                resolve({ status: false, message: 'User already exists' });
             } else {
                 userData.password = await bcrypt.hash(userData.password, 10);
                 db.get().collection(collections.USER_COLLECTION).insertOne(userData)
@@ -39,21 +39,17 @@ module.exports = {
                 return resolve({ status: false, message: 'All fields are required' });
             }
 
-            let response = {};
             let user = await db.get().collection(collections.USER_COLLECTION).findOne({ email: userData.email });
             if (user) {
                 bcrypt.compare(userData.password, user.password)
                     .then((status) => {
                         if (status) {
-                            console.log('login success');
                             resolve({ status: true, user });
                         } else {
-                            console.log('login failed');
                             resolve({ status: false, message: 'Try Again!! Invalid password.' });
                         }
                     })
             } else {
-                console.log('login failed');
                 resolve({ status: false, message: 'Invalid email' });
             }
         });
@@ -137,14 +133,12 @@ module.exports = {
                     }
                 }
             ]).toArray();
-            console.log(cartItems);
             resolve(cartItems);
         });
     },
 
     getCartCount: (userId) => {
         return new Promise(async (resolve, reject) => {
-            let count = 0;
             let cart = await db.get().collection(collections.CART_COLLECTION).aggregate([
                 {
                     $match: { user: new ObjectId(userId) }
@@ -188,76 +182,66 @@ module.exports = {
         });
     },
 
-    removeProductFromCart: (details) => {
-        return new Promise((resolve, reject) => {
-            db.get().collection(collections.CART_COLLECTION)
-                .updateOne({ _id: new ObjectId(details.cart) },
-                    {
-                        $pull: { products: { item: new ObjectId(details.product) } }
-                    }
-                )
-                .then(async () => {
-                    resolve({ removeProduct: true });
-                });
-        });
-    },
-
     getTotalAmount: (userId) => {
         return new Promise(async (resolve, reject) => {
             let userCart = await db.get().collection(collections.CART_COLLECTION).findOne({ user: new ObjectId(userId) });
-            let totalPrice = await db.get().collection(collections.CART_COLLECTION).aggregate([
-                {
-                    $match: {
-                        user: new ObjectId(userId)
-                    }
-                },
-                {
-                    $unwind: '$products'
-                },
-                {
-                    $project: {
-                        item: '$products.item',
-                        quantity: '$products.quantity'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: collections.PRODUCT_COLLECTION,
-                        localField: 'item',
-                        foreignField: '_id',
-                        as: 'product'
-                    }
-                },
-                {
-                    $project: {
-                        item: 1,
-                        quantity: 1,
-                        product: {
-                            $arrayElemAt: ['$product', 0]
+            if (userCart) {
+                let totalPrice = await db.get().collection(collections.CART_COLLECTION).aggregate([
+                    {
+                        $match: {
+                            user: new ObjectId(userId)
+                        }
+                    },
+                    {
+                        $unwind: '$products'
+                    },
+                    {
+                        $project: {
+                            item: '$products.item',
+                            quantity: '$products.quantity'
+                        }
+                    },
+                    {
+                        $lookup: {
+                            from: collections.PRODUCT_COLLECTION,
+                            localField: 'item',
+                            foreignField: '_id',
+                            as: 'product'
+                        }
+                    },
+                    {
+                        $project: {
+                            item: 1,
+                            quantity: 1,
+                            product: {
+                                $arrayElemAt: ['$product', 0]
+                            }
+                        }
+                    },
+                    {
+                        $project: {
+                            item: 1,
+                            quantity: 1,
+                            product: {
+                                _id: 1,
+                                price: { $toDouble: '$product.price' }
+                            }
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            totalPrice: { $sum: { $multiply: ['$quantity', '$product.price'] } }
                         }
                     }
-                },
-                {
-                    $project: {
-                        item: 1,
-                        quantity: 1,
-                        product: {
-                            _id: 1,
-                            price: { $toDouble: '$product.price' }
-                        }
-                    }
-                },
-                {
-                    $group: {
-                        _id: null,
-                        totalPrice: { $sum: { $multiply: ['$quantity', '$product.price'] } }
-                    }
-                }
-            ]).toArray();
-            resolve(
-                totalPrice.length > 0 ? totalPrice[0].totalPrice : 0
-            )
-
+                ]).toArray();
+                resolve(
+                    totalPrice.length > 0 ? totalPrice[0].totalPrice : 0
+                )
+            } else {
+                totalPrice = 0;
+                resolve(totalPrice);
+            }
         });
     },
 
@@ -321,7 +305,7 @@ module.exports = {
                 products: products,
                 orderDate: moment().format('DD-MM-YYYY'),
                 orderTime: moment().format('hh:mm:ss A'),
-                status: status
+                orderStatus: status
             };
             db.get().collection(collections.ORDER_COLLECTION).insertOne(orderObj).then(() => {
                 db.get().collection(collections.CART_COLLECTION).deleteOne({ user: new ObjectId(order.userId) });
@@ -337,7 +321,7 @@ module.exports = {
         });
     },
 
-    updateProfile: (userId, userData) => {
+    updateProfile: (userData) => {
         return new Promise(async (resolve, reject) => {
             let updateObject = {
                 $set: {
@@ -352,7 +336,7 @@ module.exports = {
             }
 
             let response = await db.get().collection(collections.USER_COLLECTION)
-                .updateOne({ _id: new ObjectId(userId) },
+                .updateOne({ _id: new ObjectId(userData.userId) },
                     updateObject
                 );
 
@@ -362,8 +346,12 @@ module.exports = {
                 resolve({ status: false, message: 'Failed to update profile' });
             }
         });
+    },
+
+    getOrdersCount: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let ordersCount = await db.get().collection(collections.ORDER_COLLECTION).countDocuments({userId: new ObjectId(userId)});
+            resolve(ordersCount);
+        });
     }
 };
-
-
-

@@ -2,7 +2,8 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-12">
-                <h2 class="text-center mb-4 bg-light p-4">All Order Details</h2>
+                <h1 class="text-center mb-2">All Order Details</h1>
+                <p class="text-center mb-5 fs-4">Total Orders: {{ordersCount}}</p>
                 {{#if orders}}
                 {{#each orders}}
                 <div class="card mb-5">
@@ -12,18 +13,17 @@
                             <p class="mb-2"><strong>Date:</strong> {{this.orderDate}}</p>
                             <p><strong>Time:</strong> {{this.orderTime}}</p>
                         </div>
-                            <div class="status-dropdown">
-                                <h5 class="mb-3 m-auto"><strong>Status: </strong>{{this.status}}</h5>
-                                <select onchange="changeStatusOption('{{this._id}}')" id="{{this._id}}"
-                                    class="form-control m-auto text-center">
-                                    <option selected disabled>Change status</option>
-                                    <option value="placed">Placed</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="canceled">Canceled</option>
-                                    <option value="shipped">Shipped</option>
-                                    <option value="delivered">Delivered</option>
-                                </select>
-                            </div>
+                        <div class="status-dropdown">
+                            <select onchange="changeStatusOption('{{this._id}}')" id="{{this._id}}"
+                                class="form-control m-auto text-center">
+                                <option selected disabled>Change status</option>
+                                <option value="placed">Placed</option>
+                                <option value="pending">Pending</option>
+                                <option value="canceled">Canceled</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="delivered">Delivered</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="card-body">
                         <h5 class="mb-4">Products:</h5>
@@ -51,9 +51,10 @@
                             </table>
                         </div>
                         <div class="row text-center mt-4">
-                            <div class="col-md-4"><strong>Total Amount:</strong> Rs {{this.totalPrice}}</div>
-                            <div class="col-md-4"><strong>Payment Method:</strong> {{this.paymentMethod}}</div>
-                            <div class="col-md-4"><strong>Status:</strong> {{this.status}}</div>
+                            <div class="col-md-4 fs-4"><strong>Total Amount:</strong> Rs {{this.totalPrice}}</div>
+                            <div class="col-md-4 fs-4"><strong>Payment Method:</strong> {{this.paymentMethod}}</div>
+                            <div class="col-md-4 fs-4"><strong>Status: </strong><span
+                                    id="status-{{this._id}}">{{this.orderStatus}}</span></div>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -133,3 +134,40 @@
         vertical-align: middle;
     }
 </style>
+
+<script>
+    function changeStatusOption(orderId) {
+        let statusValue = document.getElementById(orderId).value;
+        $.ajax({
+            url: '/admin/change-order-status',
+            method: 'post',
+            data: {
+                orderId: orderId,
+                orderStatus: statusValue
+            },
+            success: (response) => {
+                if (response.status) {
+                    let statusElement = document.getElementById(`status-${orderId}`);
+                    if (statusElement) {
+                        statusElement.textContent = statusValue.charAt(0).toUpperCase() + statusValue.slice(1);
+                    }
+                    Swal.fire({
+                        title: 'Success',
+                        text: response.message,
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: true
+                    })
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.message,
+                        icon: 'error',
+                        timer: 2000,
+                        showConfirmButton: true
+                    });
+                }
+            }
+        });
+    }
+</script>

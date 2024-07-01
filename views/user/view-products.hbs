@@ -10,8 +10,9 @@
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title text-truncate" data-toggle="tooltip" data-placement="bottom"
                             title="{{this.name}}">{{this.name}}</h5>
-                        <p class="card-text" data-toggle="tooltip" data-placement="bottom" title="{{this.description}}"></p>
-                            {{this.description}}</p>
+                        <p class="card-text" data-toggle="tooltip" data-placement="bottom" title="{{this.description}}">
+                        </p>
+                        {{this.description}}</p>
                         <p class="card-text font-weight-bold">RS: {{this.price}}</p>
                         <button class="btn btn-primary mt-auto" onclick="addToCart('{{this._id}}','{{../user._id}}')">
                             Add to cart
@@ -65,3 +66,34 @@
         border-color: #0056b3;
     }
 </style>
+
+<script>
+    function showResponse(message) {
+        Swal.fire({
+            title: 'Success',
+            text: message,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: true
+        });
+    }
+
+    function addToCart(proId, userId) {
+        if (userId) {
+            $.ajax({
+                url: '/add-to-cart/' + proId,
+                method: 'get',
+                success: (response) => {
+                    if (response.status) {
+                        let count = $('#cart-count').html();
+                        count = parseInt(count) + 1;
+                        $('#cart-count').html(count);
+                        showResponse('Product added to cart successfully')
+                    }
+                }
+            });
+        } else {
+            window.location.href = '/login';
+        }
+    }
+</script>

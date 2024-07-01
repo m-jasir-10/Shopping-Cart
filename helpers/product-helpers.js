@@ -13,7 +13,7 @@ module.exports = {
             };
 
             const adminDataExist = await db.get().collection(collections.ADMIN_COLLECTION).findOne({});
-
+            
             if (adminDataExist) {
                 if (adminData.name === adminDataExist.name) {
                     bcrypt.compare(adminData.email, adminDataExist.email).then((emailMatch) => {
@@ -40,7 +40,6 @@ module.exports = {
     },
 
     addProduct: (product) => {
-        console.log(product);
         return new Promise((resolve, reject) => {
             db.get().collection(collections.PRODUCT_COLLECTION).insertOne(product)
                 .then((data) => {
@@ -124,10 +123,9 @@ module.exports = {
             db.get().collection(collections.ORDER_COLLECTION)
                 .updateOne(
                     { _id: new ObjectId(orderId) },
-                    { $set: { status: status } }
+                    { $set: { orderStatus: status } }
                 )
                 .then((response) => {
-                    console.log(response)
                     if (response.modifiedCount > 0) {
                         resolve({ status: true, message: 'Order status updated successfully' });
                     } else {
@@ -155,6 +153,27 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             let userInfo = await db.get().collection(collections.USER_COLLECTION).findOne({_id: new ObjectId(userId)});
             resolve(userInfo);
+        });
+    },
+
+    getOrdersCount: () => {
+        return new Promise(async (resolve, reject) => {
+            let ordersCount = await db.get().collection(collections.ORDER_COLLECTION).countDocuments();
+            resolve(ordersCount);
+        });
+    },
+
+    getUsersCount: () => {
+        return new Promise(async (resolve, reject) => {
+            let usersCount = await db.get().collection(collections.USER_COLLECTION).countDocuments();
+            resolve(usersCount);
+        });
+    },
+
+    getUserOrdersCount: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let userOrdersCount = await db.get().collection(collections.ORDER_COLLECTION).countDocuments({userId: new ObjectId(userId)});
+            resolve(userOrdersCount);
         });
     }
 };

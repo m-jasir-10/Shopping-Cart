@@ -2,9 +2,10 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-12">
-                <h2 class="text-center mb-4">Order Details</h2>
+                <h1 class="text-center mb-2">Order Details</h1>
                 {{#if orders}}
                 {{#each orders}}
+                <p class="text-center mb-5 fs-4">Total Orders: {{ordersCount}}</p>
                 <div class="card mb-5">
                     <div class="card-header">
                         <h5 class="mb-2"><strong>Order ID:</strong> {{this._id}}</h5>
@@ -26,7 +27,8 @@
                                 <tbody>
                                     {{#each this.products}}
                                     <tr>
-                                        <td><img src="{{this.image}}" alt="{{this.name}}" width="75px" height="auto"></td>
+                                        <td><img src="{{this.image}}" alt="{{this.name}}" width="75px" height="auto">
+                                        </td>
                                         <td>{{this.name}}</td>
                                         <td>{{this.quantity}}</td>
                                         <td>{{this.price}}</td>
@@ -36,9 +38,9 @@
                             </table>
                         </div>
                         <div class="row text-center mt-4">
-                            <div class="col-md-4"><strong>Total Amount:</strong> Rs {{this.totalPrice}}</div>
-                            <div class="col-md-4"><strong>Payment Method:</strong> {{this.paymentMethod}}</div>
-                            <div class="col-md-4"><strong>Status:</strong> {{this.status}}</div>
+                            <div class="col-md-4 fs-4"><strong>Total Amount:</strong> Rs {{this.totalPrice}}</div>
+                            <div class="col-md-4 fs-4"><strong>Payment Method:</strong> {{this.paymentMethod}}</div>
+                            <div class="col-md-4 fs-4"><strong>Status:</strong> {{this.orderStatus}}</div>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -83,7 +85,11 @@
                 </div>
                 {{/each}}
                 {{else}}
-                <p class="text-center text-danger">Order details not found.</p>
+                <div class="col-md-12 mt-5">
+                    <div data-aos="fade-down" class="card text-center p-4" style="width: auto;">
+                        <p class="text-center text-danger">Order details not found. Pls place an order first</p>
+                    </div>
+                </div>
                 {{/if}}
             </div>
         </div>

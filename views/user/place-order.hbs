@@ -5,7 +5,7 @@
                 <h2 class="text-center mb-3">Enter Delivery Details</h2>
             </div>
             <div class="col-md-6 mt-4 mb-5 me-4 bg-light p-4">
-                <form id="checkout-form" action="" class="mb-3 needs-validation" novalidate>
+                <form id="checkout-form" class="mb-3 needs-validation" novalidate>
                     <div class="col-md-12 mb-3" hidden>
                         <label for="inputName" class="form-label">Name</label>
                         <input type="text" class="form-control" name="name" id="inputName" placeholder="Enter your name"
@@ -90,3 +90,61 @@
         </div>
     </div>
 </section>
+
+<script>
+    document.getElementById('checkout-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const fields = ['inputName', 'inputEmail', 'inputAddress', 'inputState', 'inputCity', 'inputCountry', 'inputPincode', 'inputMobile'];
+        const paymentMethod = document.querySelector('input[name="payment-method"]:checked');
+        let isValid = true;
+
+        fields.forEach(field => {
+            const input = document.getElementById(field);
+            if (input.value.trim() === '') {
+                input.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+
+        if (!paymentMethod) {
+            document.getElementById('codRadioBtn').classList.add('is-invalid');
+            document.getElementById('onlineRadioBtn').classList.add('is-invalid');
+            isValid = false;
+        } else {
+            document.getElementById('codRadioBtn').classList.remove('is-invalid');
+            document.getElementById('onlineRadioBtn').classList.remove('is-invalid');
+        }
+
+        if (isValid) {
+            $.ajax({
+                url: '/place-order',
+                method: 'post',
+                data: $('#checkout-form').serialize(),
+                success: ((response) => {
+                    if (response.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: response.message,
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: true
+                        }).then(() => {
+                            window.location = '/order-success'
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: response.message,
+                            icon: 'error',
+                            timer: 2000,
+                            showConfirmButton: true
+                        })
+                    }
+                })
+            });
+        }
+    });
+</script>

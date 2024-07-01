@@ -29,34 +29,30 @@
                         </td>
                         <td>
                             <button class="btn btn-danger"
-                                onclick="removeProductFromCart('{{this._id}}', '{{this.product._id}}')">Remove</button>
+                                onclick="removeProductFromCart('{{this._id}}', '{{this.product._id}}', '{{../user._id}}')">Remove</button>
                         </td>
                     </tr>
                     {{/each}}
                 </tbody>
             </table>
         </div>
-
-        {{!-- <div class="row mb-5 bg-light">
-            <div class="col-md-12 bg-light m-5 float-end">
-                <h4 class="mb-3">Total : Rs <span id="total-price">{{totalPrice}}</span></h4>
-                <hr>
-                <a href="/place-order" class="btn btn-success" style="width:100%;">Place Order</a>
-            </div>
-        </div> --}}
         <div class="row mb-5 justify-content-end">
             <div class="col-md-4 bg-light p-5" style="max-width: 400px;">
-                <h4 class="mb-4 text-center">Total : Rs <span id="total-price">{{totalPrice}}</span></h4>
+                <h4 class="mb-4 text-center">Total Amount : Rs <span id="total-price">{{totalPrice}}</span></h4>
                 <hr>
                 <a href="/place-order" class="btn btn-success mt-2" style="width:100%;">Place Order</a>
             </div>
         </div>
 
         {{else}}
-        <h1 class="text-danger text-center mb-3"><strong>Cart is empty now...</strong></h1>
-        <p class="text-danger text-center">Add products to the cart</p>
-        <div class="text-center mb-5 mt-3">
-            <a href="/" class=" btn btn-primary"><strong>Add products</strong></a>
+        <div class="col-md-12">
+            <div data-aos="fade-down" class="card text-center p-4" style="width: auto;">
+                <h1 class="text-danger text-center mb-3"><strong>Cart is empty now...</strong></h1>
+                <p class="text-danger text-center fs-5">Add products to the cart</p>
+                <div class="text-center mb-5 mt-3">
+                    <a href="/" class=" btn btn-primary"><strong>Add products</strong></a>
+                </div>
+            </div>
         </div>
         {{/if}}
     </div>
@@ -68,3 +64,115 @@
         vertical-align: middle;
     }
 </style>
+
+<script>
+    function showResponse(message) {
+        Swal.fire({
+            title: 'Success',
+            text: message,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: true
+        });
+    }
+
+    function changeQuantity(cartId, productId, userId, count) {
+        let quantity = parseInt(document.getElementById(productId).innerHTML);
+        count = parseInt(count);
+        let newQuantity = quantity + count;
+
+        if (newQuantity === 0) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You are about to delete this product from the cart. This action cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    proceedChangeQuantity(cartId, productId, userId, count);
+                }
+            });
+        } else {
+            proceedChangeQuantity(cartId, productId, userId, count);
+        }
+    }
+
+    function proceedChangeQuantity(cartId, productId, userId, count) {
+        let quantity = parseInt(document.getElementById(productId).innerHTML);
+        count = parseInt(count);
+        $.ajax({
+            url: '/change-product-quantity/',
+            method: 'post',
+            data: {
+                cart: cartId,
+                user: userId,
+                product: productId,
+                count: count,
+                quantity: quantity
+            },
+            success: (response) => {
+                if (response.removeProduct) {
+                    showResponse("Product removed from cart");
+                    document.getElementById(productId).closest('tr').remove();
+                    updateIndexNumbers();
+                } else {
+                    document.getElementById(productId).innerHTML = quantity + count;
+                }
+                updateCartSummary(response);
+            }
+        });
+    }
+
+    function removeProductFromCart(cartId, productId, userId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You are about to delete this product from the cart. This action cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/remove-product-from-cart',
+                    method: 'post',
+                    data: {
+                        cart: cartId,
+                        product: productId,
+                        user: userId
+                    },
+                    success: (response) => {
+                        if (response.removeProduct) {
+                            showResponse("Product removed from cart");
+                            document.getElementById(productId).closest('tr').remove();
+                            updateCartSummary(response);
+                            updateIndexNumbers();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function updateCartSummary(response) {
+        if (response.cartCount !== undefined && response.totalPrice !== undefined) {
+            document.getElementById('total-price').innerHTML = response.totalPrice;
+            document.getElementById('cart-count').innerHTML = response.cartCount;
+
+            if (response.cartCount === 0) {
+                $('tbody').html('<tr><td colspan="6" class="text-center text-danger"><strong>Cart is empty now...</strong></td></tr>');
+                $('.justify-content-end').remove();
+            }
+        }
+    }
+
+    function updateIndexNumbers() {
+        $('tbody tr').each(function (index) {
+            $(this).find('th').text(index + 1);
+        });
+    }
+</script>

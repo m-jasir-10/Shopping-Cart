@@ -3,40 +3,40 @@
         <div class="row">
             <div class="col-md-8 m-auto bg-light p-5">
                 <h2 class="text-center mb-2">Add Product</h2>
-                {{#if message}}
-                <div class="alert alert-success" role="alert">
-                    {{message}}
-                </div>
-                {{/if}}
 
-                <form action="/admin/add-product" method="post" enctype="multipart/form-data">
+                <form id="addProductForm" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="titleInput" class="form-label">Name:</label>
                         <input type="text" class="form-control" name="name" id="titleInput"
                             placeholder="Enter Product Name">
+                        <div class="invalid-feedback">Please enter a product name.</div>
                     </div>
                     <div class="mb-3">
                         <label for="categoryInput" class="form-label">Category:</label>
                         <input type="text" class="form-control" name="category" id="categoryInput"
                             placeholder="Enter Product Category">
+                        <div class="invalid-feedback">Please enter a product category.</div>
                     </div>
                     <div class="mb-3">
                         <label for="descriptionInput" class="form-label">Description:</label>
                         <input type="text" class="form-control" name="description" id="descriptionInput"
                             placeholder="Enter Product Description">
+                        <div class="invalid-feedback">Please enter a product description.</div>
                     </div>
                     <div class="mb-3">
                         <label for="priceInput" class="form-label">Price:</label>
                         <input type="number" class="form-control" name="price" id="priceInput"
                             placeholder="Enter Product price">
+                        <div class="invalid-feedback">Please enter a valid product price.</div>
                     </div>
                     <div class="mb-3">
                         <label for="imageFile" class="form-label">Image:</label>
-                        <img src="" alt="" height="100px" class="m-2" id="imageView">
-                        <input class="form-control" type="file" name="image" id="imageFile" accept=""
-                            onchange="viewImage(event)">
+                        <img src="" alt="" height="100px" class="m-3" id="imageView">
+                        <input class="form-control" type="file" name="image" id="imageFile" onchange="viewImage(event)"
+                            accept="image/*">
+                        <div class="invalid-feedback">Please select an image file.</div>
                     </div>
-                    <button class="btn btn-success float-end mt-3" type="submit">
+                    <button class="btn btn-success float-end mt-3" type="submit" id="addProductBtn">
                         Add product
                     </button>
                 </form>
@@ -44,3 +44,70 @@
         </div>
     </div>
 </section>
+
+<script>
+    function viewImage(event) {
+        document.getElementById('imageView').src = URL.createObjectURL(event.target.files[0]);
+    }
+
+    document.getElementById('addProductForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        if (validateForm()) {
+            submitForm();
+        }
+    });
+
+    function validateForm() {
+        const fields = ['titleInput', 'categoryInput', 'descriptionInput', 'priceInput', 'imageFile'];
+        let isValid = true;
+
+        fields.forEach(field => {
+            const input = document.getElementById(field);
+            if (input.value.trim() === '') {
+                input.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+
+        return isValid;
+
+    }
+
+    function submitForm() {
+        let formData = new FormData(document.getElementById('addProductForm'));
+
+        $.ajax({
+            url: '/admin/add-product',
+            method: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.status) {
+                    Swal.fire({
+                        title: 'Success',
+                        text: response.message,
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: true
+                    })
+                        .then(() => {
+                            document.getElementById('addProductForm').reset();
+                            document.getElementById('imageView').src = '';
+                        });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.message,
+                        icon: 'error',
+                        timer: 2000,
+                        showConfirmButton: true
+                    });
+                }
+            }
+        });
+    }
+</script>

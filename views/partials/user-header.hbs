@@ -18,7 +18,8 @@
                     </li>
                     {{#if user}}
                     <li class="nav-item">
-                        <a class="nav-link" href="/view-orders">Orders</a>
+                        <a class="nav-link" href="/view-orders">Orders <span class="badge bg-success"
+                                id="orders-count">{{ordersCount}}</span></a>
                     </li>
                     {{/if}}
                 </ul>
