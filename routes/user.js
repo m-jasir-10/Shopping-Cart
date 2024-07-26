@@ -29,7 +29,11 @@ const verifyLogin = (req, res, next) => {
 router.get('/', async (req, res, next) => {
     let user = req.session.user;
     let cartCount = null;
-    let ordersCount = await userHelpers.getOrdersCount(user._id);
+    let ordersCount = null;
+    
+    if (user) {
+        let ordersCount = await userHelpers.getOrdersCount(user._id);
+    }
 
     if (user) {
         cartCount = await userHelpers.getCartCount(user._id);

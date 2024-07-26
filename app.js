@@ -6,11 +6,14 @@ var logger = require('morgan');
 var hbs = require('express-handlebars');
 var fileUpload = require('express-fileupload');
 var session = require('express-session')
+var dotenv = require('dotenv');
 
 var db = require('./config/connection');
 
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
+
+dotenv.config();
 
 var app = express();
 
@@ -37,7 +40,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(fileUpload());
 app.use(session({
-    secret: 'hashKey',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -48,8 +51,9 @@ app.use(session({
 db.connect((err) => {
     if (err) {
         console.log("Database connection Error :" + err);
+        process.exit(1);
     } else {
-        console.log("Database connected to port 27017");
+        console.log(" MongoDB Database connected");
     }
 });
 
