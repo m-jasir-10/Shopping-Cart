@@ -1,7 +1,11 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/"><strong>Shopping Cart</strong></a>
+            <a class="navbar-brand me-5" href="/">
+                <img src="/images/icons/cart-shopping-solid.svg" alt="Shopping Cart Logo" class="logo"
+                    style="height: 40px;">
+                <strong>Shopping Cart</strong>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -9,15 +13,15 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Products</a>
+                    <li class="nav-item me-3">
+                        <a class="nav-link active fs-5 " aria-current="page" href="/">Products</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/cart">Cart <span class="badge bg-success"
+                    <li class="nav-item fs-5 me-3">
+                        <a class="nav-link " href="/cart">Cart <span class="badge bg-success"
                                 id="cart-count">{{cartCount}}</span></a>
                     </li>
                     {{#if user}}
-                    <li class="nav-item">
+                    <li class="nav-item fs-5 me-3">
                         <a class="nav-link" href="/view-orders">Orders <span class="badge bg-success"
                                 id="orders-count">{{ordersCount}}</span></a>
                     </li>
@@ -72,5 +76,12 @@
 
     .dropdown-item:hover {
         background-color: rgb(211, 204, 204);
+    }
+
+    @media (max-width: 576px) {
+        .dropdown-menu {
+            width: auto;
+            max-width: 150px;
+        }
     }
 </style>

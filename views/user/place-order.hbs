@@ -65,7 +65,7 @@
                 <div class="border p-5 bg-light">
                     <h4>Total Amount : Rs {{totalPrice}}</h4>
                     <hr>
-                    <h5 class="mb-2">Payment method</h5>
+                    <h5 class="mb-3">Payment method</h5>
                     <div class="form-check mb-2">
                         <input class="form-check-input" type="radio" name="payment-method" id="codRadioBtn" value="COD">
                         <label class="form-check-label" for="codRadioBtn">
@@ -73,15 +73,15 @@
                         </label>
                         <div class="invalid-feedback">Please select a payment method.</div>
                     </div>
-                    <div class="form-check mb-3">
+                    {{!-- <div class="form-check mb-3">
                         <input class="form-check-input" type="radio" name="payment-method" id="onlineRadioBtn"
                             value="ONLINE">
                         <label class="form-check-label" for="onlineRadioBtn">
                             Online payment
                         </label>
                         <div class="invalid-feedback">Please select a payment method.</div>
-                    </div>
-                    <div class="row">
+                    </div> --}}
+                    <div class="row mt-5">
                         <button class="btn btn-success m-auto" type="submit">Checkout</button>
                     </div>
                 </div>
@@ -111,11 +111,11 @@
 
         if (!paymentMethod) {
             document.getElementById('codRadioBtn').classList.add('is-invalid');
-            document.getElementById('onlineRadioBtn').classList.add('is-invalid');
+            {{!-- document.getElementById('onlineRadioBtn').classList.add('is-invalid'); --}}
             isValid = false;
         } else {
             document.getElementById('codRadioBtn').classList.remove('is-invalid');
-            document.getElementById('onlineRadioBtn').classList.remove('is-invalid');
+            {{!-- document.getElementById('onlineRadioBtn').classList.remove('is-invalid'); --}}
         }
 
         if (isValid) {

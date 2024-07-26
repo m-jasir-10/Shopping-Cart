@@ -1,60 +1,74 @@
 <section>
     <div class="container mb-5">
-        <div class="row bg-light p-5 m-5">
+        <div class="row mt-5 mb-5">
             {{#if products}}
-            <table class="table table-bordered text-center table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Item</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each products}}
-                    <tr>
-                        <th scope=" row">{{ increment @index}}</th>
-                        <td><img src="{{this.product.image}}" alt="" width="75px" height="auto"></td>
-                        <td>{{this.product.name}}</td>
-                        <td>RS: {{this.product.price}}</td>
-                        <td>
-                            <button class="btn btn-secondary me-3"
-                                onclick="changeQuantity('{{this._id}}', '{{this.product._id}}', '{{../user._id}}', -1)">-</button>
-                            <span id="{{this.product._id}}">{{this.quantity}}</span>
-                            <button class="btn btn-secondary ms-3"
-                                onclick="changeQuantity('{{this._id}}', '{{this.product._id}}', '{{../user._id}}', 1)">+</button>
-                        </td>
-                        <td>
-                            <button class="btn btn-danger"
-                                onclick="removeProductFromCart('{{this._id}}', '{{this.product._id}}', '{{../user._id}}')">Remove</button>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
-        <div class="row mb-5 justify-content-end">
-            <div class="col-md-4 bg-light p-5" style="max-width: 400px;">
-                <h4 class="mb-4 text-center">Total Amount : Rs <span id="total-price">{{totalPrice}}</span></h4>
-                <hr>
-                <a href="/place-order" class="btn btn-success mt-2" style="width:100%;">Place Order</a>
-            </div>
-        </div>
+            <h1 class="text-center mb-5">Cart ( {{cartCount}} )</h1>
+            <div class="col-md-12 bg-light p-5">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">Item</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each products}}
+                            <tr>
+                                <th scope=" row">{{ increment @index}}</th>
 
-        {{else}}
-        <div class="col-md-12">
-            <div data-aos="fade-down" class="card text-center p-4" style="width: auto;">
-                <h1 class="text-danger text-center mb-3"><strong>Cart is empty now...</strong></h1>
-                <p class="text-danger text-center fs-5">Add products to the cart</p>
-                <div class="text-center mb-5 mt-3">
-                    <a href="/" class=" btn btn-primary"><strong>Add products</strong></a>
+                                <td>
+                                    <img src="{{this.product.image}}" alt="" style="max-width: 75px; height:auto;"
+                                        class="img-fluid">
+                                </td>
+
+                                <td>{{this.product.name}}</td>
+                                <td>₹{{this.product.price}}</td>
+
+                                <td>
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <button class="btn btn-secondary me-3"
+                                            onclick="changeQuantity('{{this._id}}', '{{this.product._id}}', '{{../user._id}}', -1)">-</button>
+                                        <span id="{{this.product._id}}"> {{this.quantity}} </span>
+                                        <button class="btn btn-secondary ms-3"
+                                            onclick="changeQuantity('{{this._id}}', '{{this.product._id}}', '{{../user._id}}', 1)">+</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger"
+                                        onclick="removeProductFromCart('{{this._id}}', '{{this.product._id}}', '{{../user._id}}')">Remove</button>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        {{/if}}
+        <div class="row mb-5 mt-5 justify-content-end">
+            <div class="col-md-12 bg-light p-5" style="max-width: 400px;">
+                <h4 class="mb-4 text-center">Total Amount : ₹<span id="total-price">{{totalPrice}}</span></h4>
+                <hr>
+                <a href="/place-order" class="btn btn-success mt-2 w-100" style="width:100%;">Place Order</a>
+            </div>
+        </div>
+    </div>
+
+    {{else}}
+    <div class="col-md-12 mt-5">
+        <div data-aos="fade-down" class="card text-center p-4" style="width: auto;">
+            <h1 class="text-danger text-center mb-3 mt-4"><strong>Cart is empty now...</strong></h1>
+            <p class="text-danger text-center fs-5">Add products to the cart</p>
+            <div class="text-center mb-5 mt-2">
+                <a href="/" class=" btn btn-primary"><strong>Add products</strong></a>
+            </div>
+        </div>
+    </div>
+    {{/if}}
     </div>
 </section>
 

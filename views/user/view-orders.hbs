@@ -2,10 +2,9 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="text-center mb-2">Order Details</h1>
                 {{#if orders}}
+                <h1 class="text-center mb-5">Order Details ( {{ordersCount}} )</h1>
                 {{#each orders}}
-                <p class="text-center mb-5 fs-4">Total Orders: {{ordersCount}}</p>
                 <div class="card mb-5">
                     <div class="card-header">
                         <h5 class="mb-2"><strong>Order ID:</strong> {{this._id}}</h5>
@@ -19,7 +18,7 @@
                                 <thead>
                                     <tr>
                                         <th>Image</th>
-                                        <th>Product Name</th>
+                                        <th>Name</th>
                                         <th>Quantity</th>
                                         <th>Price</th>
                                     </tr>
@@ -38,19 +37,15 @@
                             </table>
                         </div>
                         <div class="row text-center mt-4">
-                            <div class="col-md-4 fs-4"><strong>Total Amount:</strong> Rs {{this.totalPrice}}</div>
-                            <div class="col-md-4 fs-4"><strong>Payment Method:</strong> {{this.paymentMethod}}</div>
-                            <div class="col-md-4 fs-4"><strong>Status:</strong> {{this.orderStatus}}</div>
+                            <div class="col-md-4 fs-4 mb-3"><strong>Total Amount:</strong> Rs {{this.totalPrice}}</div>
+                            <div class="col-md-4 fs-4 mb-3"><strong>Payment Method:</strong> {{this.paymentMethod}}</div>
+                            <div class="col-md-4 fs-4 mb-3"><strong>Status:</strong> {{this.orderStatus}}</div>
                         </div>
                     </div>
                     <div class="card-footer">
                         <h5 class="mb-4 mt-2">Delivery Address:</h5>
                         <table class="table table-bordered">
                             <tbody>
-                                <tr>
-                                    <th>Name:</th>
-                                    <td>{{this.name}}</td>
-                                </tr>
                                 <tr>
                                     <th>Address:</th>
                                     <td>{{this.deliveryDetails.address}}</td>
@@ -87,7 +82,13 @@
                 {{else}}
                 <div class="col-md-12 mt-5">
                     <div data-aos="fade-down" class="card text-center p-4" style="width: auto;">
-                        <p class="text-center text-danger">Order details not found. Pls place an order first</p>
+                        <h1 class="text-danger text-center mb-3 mt-5"><strong>Order details are not found...</strong>
+                        </h1>
+                        <p class="text-center text-warning mt-3 fs-4 mb-3">Please place an order first</p>
+                        <div class="text-center mb-5 mt-2">
+                            <a href="/" class=" btn btn-primary me-3"><strong>Add products</strong></a>
+                            <a href="/cart" class="btn btn-secondary ps-3 pe-3"><strong>View cart</strong></a>
+                        </div>
                     </div>
                 </div>
                 {{/if}}

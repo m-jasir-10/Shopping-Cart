@@ -1,7 +1,10 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/admin"><strong>Admin Panel</strong></a>
+            <a class="navbar-brand me-5" href="/admin">
+                <img src="/images/icons/cart-shopping-solid.svg" alt="logo" style="height: 40px;">
+                <strong class="">Admin Panel</strong>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -9,15 +12,15 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/admin">All Products</a>
+                    <li class="nav-item me-3">
+                        <a class="nav-link active fs-5" aria-current="page" href="/admin">All Products</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/all-orders">All Orders <span class="badge bg-success"
+                    <li class="nav-item me-3">
+                        <a class="nav-link fs-5" href="/admin/all-orders">All Orders <span class="badge bg-success"
                                 id="orders-count">{{ordersCount}}</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/all-users">All Users <span class="badge bg-success"
+                    <li class="nav-item me-3">
+                        <a class="nav-link fs-5" href="/admin/all-users">All Users <span class="badge bg-success"
                                 id="users-count">{{usersCount}}</span></a>
                     </li>
                 </ul>
@@ -67,5 +70,12 @@
 
     .dropdown-item:hover {
         background-color: #e7dfdf;
+    }
+
+    @media (max-width: 576px) {
+        .dropdown-menu {
+            width: auto;
+            max-width: 150px;
+        }
     }
 </style>
