@@ -1,32 +1,50 @@
 <section>
     <div class="container mt-5 mb-5">
-        <h1 class="text-center mb-2">All User Details</h1>
-        <p class="text-center mb-5 fs-4">Total Users: {{usersCount}}</p>
-        <div class="row bg-light p-5">
+        <div class="row">
+            <h1 class="text-center mb-5">Users ( {{usersCount}} )</h1>
             {{#if users}}
-            <table class="col-md-12 table table-bordered table-hover text-center">
-                <thead class="">
-                    <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each users}}
-                    <tr>
-                        <th scope="row">{{ increment @index}}</th>
-                        <td>{{this.name}}</td>
-                        <td>{{this.email}}</td>
-                        <td><a href="/admin/view-user-orders/{{this._id}}" class="btn btn-primary">View orders</a></td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
+            <div class="bg-light p-5">
+                <div class="table-responsive">
+
+                    <table id="users-table" class="col-md-12 table table-bordered table-hover text-center">
+                        <thead>
+                            <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">User Id</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each users}}
+                            <tr>
+                                <th scope="row">{{ increment @index}}</th>
+                                <td>{{this.name}}</td>
+                                <td>{{this._id}}</td>
+                                <td>{{this.email}}</td>
+                                <td>
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <a href="/admin/view-user-orders/{{this._id}}" class="btn btn-primary">View
+                                            orders</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         {{else}}
-        <p class="text-center text-danger">User details are not found or there are no users.</p>
+        <div class="col-md-12">
+            <div data-aos="fade-down" class="card text-center p-4" style="width: auto;">
+                <h1 class="text-danger mt-5 mb-4">User details not found.</h1>
+                <p class="text-warning fs-4 mb-5">
+                    User details are not available.
+                </p>
+            </div>
+        </div>
         {{/if}}
     </div>
 </section>

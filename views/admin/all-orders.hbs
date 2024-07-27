@@ -1,105 +1,177 @@
 <section>
-    <div class="container mt-5">
+    <div class="container mt-5 mb-5">
         <div class="row">
-            <div class="col-md-12">
-                <h1 class="text-center mb-2">All Order Details</h1>
-                <p class="text-center mb-5 fs-4">Total Orders: {{ordersCount}}</p>
-                {{#if orders}}
-                {{#each orders}}
-                <div class="card mb-5">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div>
-                            <h5 class="mb-2"><strong>Order ID:</strong> {{this._id}}</h5>
-                            <p class="mb-2"><strong>Date:</strong> {{this.orderDate}}</p>
-                            <p><strong>Time:</strong> {{this.orderTime}}</p>
-                        </div>
-                        <div class="status-dropdown">
-                            <select onchange="changeStatusOption('{{this._id}}')" id="{{this._id}}"
-                                class="form-control m-auto text-center">
-                                <option selected disabled>Change status</option>
-                                <option value="placed">Placed</option>
-                                <option value="pending">Pending</option>
-                                <option value="canceled">Canceled</option>
-                                <option value="shipped">Shipped</option>
-                                <option value="delivered">Delivered</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="mb-4">Products:</h5>
-                        <div class="table-responsive">
-                            <table class="table table-bordered text-center table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Image</th>
-                                        <th>Product Name</th>
-                                        <th>Quantity</th>
-                                        <th>Price</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {{#each this.products}}
-                                    <tr>
-                                        <td><img src="{{this.image}}" alt="{{this.name}}" width="75px" height="auto">
-                                        </td>
-                                        <td>{{this.name}}</td>
-                                        <td>{{this.quantity}}</td>
-                                        <td>{{this.price}}</td>
-                                    </tr>
-                                    {{/each}}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row text-center mt-4">
-                            <div class="col-md-4 fs-4"><strong>Total Amount:</strong> Rs {{this.totalPrice}}</div>
-                            <div class="col-md-4 fs-4"><strong>Payment Method:</strong> {{this.paymentMethod}}</div>
-                            <div class="col-md-4 fs-4"><strong>Status: </strong><span
-                                    id="status-{{this._id}}">{{this.orderStatus}}</span></div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <h5 class="mb-4 mt-2">User Information:</h5>
-                        <table class="table table-bordered">
-                            <tbody>
-                                <tr>
-                                    <th>Name:</th>
-                                    <td>{{this.name}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Address:</th>
-                                    <td>{{this.deliveryDetails.address}}</td>
-                                </tr>
-                                <tr>
-                                    <th>City:</th>
-                                    <td>{{this.deliveryDetails.city}}</td>
-                                </tr>
-                                <tr>
-                                    <th>State:</th>
-                                    <td>{{this.deliveryDetails.state}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Country:</th>
-                                    <td>{{this.deliveryDetails.country}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Pincode:</th>
-                                    <td>{{this.deliveryDetails.pincode}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Email:</th>
-                                    <td>{{this.email}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Mobile:</th>
-                                    <td>{{this.deliveryDetails.mobile}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+            {{#if orders}}
+            <h1 class="text-center mb-5">Orders ( {{ordersCount}} )</h1>
+            <div class="col-md-12 bg-light p-3">
+                <div class="table-responsive">
+                    <table id="orders-table" class="table table-bordered text-center table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col">S.No</th>
+                                <th class="col">Order ID</th>
+                                <th class="col">Date &amp; Time</th>
+                                <th class="col">Payment Method</th>
+                                <th class="col">Total Amount</th>
+                                <th class="col">Order Status</th>
+                                <th class="col">Change Status</th>
+                                <th class="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each orders}}
+                            <tr>
+                                <td>{{increment @index}}</td>
+                                <td>{{this._id}}</td>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <span class="mb-2">{{this.orderDate}}</span>
+                                        <span>{{this.orderTime}}</span>
+                                    </div>
+                                </td>
+
+                                <td>{{this.paymentMethod}}</td>
+                                <td>₹ {{this.totalPrice}}</td>
+                                <td>
+                                    <span id="status-{{this._id}}" class="status">{{this.orderStatus}}</span>
+                                </td>
+                                <td class="">
+                                    <select onchange="changeStatusOption('{{this._id}}')" id="{{this._id}}"
+                                        class="text-center form-control p-2">
+                                        <option selected disabled>Change status</option>
+                                        <option value="placed">Placed</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="canceled">Canceled</option>
+                                        <option value="shipped">Shipped</option>
+                                        <option value="delivered">Delivered</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center align-items-center mb-3">
+                                        <button class="btn btn-primary text-light" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#userModal-{{this._id}}">
+                                            Delivery Details
+                                        </button>
+                                        <div class="modal fade" id="userModal-{{this._id}}" tabindex="-1"
+                                            aria-labelledby="userModalLabel-{{this._id}}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="userModalLabel-{{this._id}}">User
+                                                            Info
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <table class="table table-bordered">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th>Name:</th>
+                                                                    <td>{{this.name}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Address:</th>
+                                                                    <td>{{this.deliveryDetails.address}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>City:</th>
+                                                                    <td>{{this.deliveryDetails.city}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>State:</th>
+                                                                    <td>{{this.deliveryDetails.state}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Country:</th>
+                                                                    <td>{{this.deliveryDetails.country}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Pincode:</th>
+                                                                    <td>{{this.deliveryDetails.pincode}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Email:</th>
+                                                                    <td>{{this.email}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Mobile:</th>
+                                                                    <td>{{this.deliveryDetails.mobile}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <button class="btn btn-success d-flex" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#productsModal-{{this._id}}">
+                                            View Products
+                                        </button>
+                                        <div class="modal fade" id="productsModal-{{this._id}}" tabindex="-1"
+                                            aria-labelledby="productsModalLabel-{{this._id}}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="productsModalLabel-{{this._id}}">
+                                                            Products</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Image</th>
+                                                                    <th>Product Name</th>
+                                                                    <th>Quantity</th>
+                                                                    <th>Price</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {{#each this.products}}
+                                                                <tr>
+                                                                    <td><img src="{{this.image}}" alt="{{this.name}}"
+                                                                            width="75px" height="auto"></td>
+                                                                    <td>{{this.name}}</td>
+                                                                    <td>{{this.quantity}}</td>
+                                                                    <td>{{this.price}}</td>
+                                                                </tr>
+                                                                {{/each}}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                {{else}}
+                <div class="col-md-12">
+                    <div data-aos="fade-down" class="card text-center p-4" style="width: auto;">
+                        <h1 class="text-danger mt-5 mb-4">Order details not found.</h1>
+                        <p class="text-warning fs-4 mb-5">
+                            Product details are not available.
+                        </p>
                     </div>
                 </div>
-                {{/each}}
-                {{else}}
-                <p class="text-center text-danger">Order details not found.</p>
                 {{/if}}
             </div>
         </div>
@@ -107,13 +179,6 @@
 </section>
 
 <style>
-    .card-header {
-        border-bottom: 1px solid #e9ecef;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
     .status-dropdown select {
         width: 150px;
         padding: 8px 12px;
@@ -124,9 +189,8 @@
         font-size: 16px;
     }
 
-    .status-dropdown select {
-        margin-top: 5px;
-        width: 150px;
+    .status {
+        text-transform: capitalize;
     }
 
     .table th,

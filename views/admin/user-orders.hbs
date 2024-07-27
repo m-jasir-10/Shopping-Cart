@@ -2,8 +2,7 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="text-center mb-2">User Details</h1>
-                <p class="text-center mb-5 fs-5">Total Orders: {{userOrdersCount}}</p>
+                <h1 class="text-center mb-5">User Orders ( {{userOrdersCount}} )</h1>
                 {{#if userOrders}}
                 {{#each userOrders}}
                 <div class="card mb-5">
@@ -38,16 +37,15 @@
                             </table>
                         </div>
                         <div class="row text-center mt-4">
-                            <div class="col-md-4 fs-4"><strong>Total Amount:</strong> Rs {{this.totalPrice}}</div>
-                            <div class="col-md-4 fs-4"><strong>Payment Method:</strong> {{this.paymentMethod}}</div>
-                            <div class="col-md-4 fs-4"><strong>Status:</strong> {{this.orderStatus}}</div>
+                            <div class="col-md-4 fs-4 mb-3"><strong>Total Amount:</strong> Rs {{this.totalPrice}}</div>
+                            <div class="col-md-4 fs-4 mb-3"><strong>Payment Method:</strong> {{this.paymentMethod}}</div>
+                            <div class="col-md-4 fs-4 mb-3"><strong>Status:</strong> {{this.orderStatus}}</div>
                         </div>
                     </div>
                     <div class="card-footer">
                         <h5 class="mb-4 mt-2">Delivery Address:</h5>
                         <table class="table table-bordered">
                             <tbody>
-
                                 <tr>
                                     <th>Address:</th>
                                     <td>{{this.deliveryDetails.address}}</td>
@@ -69,6 +67,10 @@
                                     <td>{{this.deliveryDetails.pincode}}</td>
                                 </tr>
                                 <tr>
+                                    <th>Email:</th>
+                                    <td>{{this.email}}</td>
+                                </tr>
+                                <tr>
                                     <th>Mobile:</th>
                                     <td>{{this.deliveryDetails.mobile}}</td>
                                 </tr>
@@ -78,7 +80,14 @@
                 </div>
                 {{/each}}
                 {{else}}
-                <p class="text-center text-danger">Order details not found.</p>
+                <div class="col-md-12">
+                    <div data-aos="fade-down" class="card text-center p-4" style="width: auto;">
+                        <h1 class="text-danger mt-5 mb-4">Order details not found.</h1>
+                        <p class="text-warning fs-4 mb-5">
+                            This User has no Orders.
+                        </p>
+                    </div>
+                </div>
                 {{/if}}
             </div>
         </div>

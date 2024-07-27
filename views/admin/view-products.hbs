@@ -5,41 +5,55 @@
                 <a class="btn btn-success float-end" href="/admin/add-product" role="button">Add Products</a>
             </div>
         </div>
-        <div class="row bg-light p-5">
+        <div class="row mt-5">
             {{#if products}}
-            <table class="table table-bordered table-hover mt-4 text-center" id="products-table">
-                <thead>
-                    <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Image</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each products}}
-                    <tr id="{{this._id}}">
-                        <th scope="row">{{increment @index}}</th>
-                        <td><img src="{{this.image}}" alt="" height="auto" width="50px"></td>
-                        <td>{{this.name}}</td>
-                        <td>{{this.category}}</td>
-                        <td>{{this.description}}</td>
-                        <td>{{this.price}}</td>
-                        <td>
-                            <a href="/admin/edit-product/{{this._id}}" class="btn btn-primary me-2">Edit</a>
-                            <button class="btn btn-danger"
-                                onclick="deleteProduct('{{this._id}}', '{{this.name}}')">Delete</button>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
+            <h1 class="text-center mb-5">Products ( {{productsCount}} )</h1>
+            <div class="bg-light p-5">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover mt-4 text-center" id="products-table">
+                        <thead class="text-center">
+                            <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each products}}
+                            <tr id="{{this._id}}">
+                                <th scope="row">{{increment @index}}</th>
+                                <td><img src="{{this.image}}" alt="" height="auto" width="50px"></td>
+                                <td>{{this.name}}</td>
+                                <td>{{this.category}}</td>
+                                <td>{{this.description}}</td>
+                                <td>₹{{this.price}}</td>
+                                <td>
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <a href="/admin/edit-product/{{this._id}}" class="btn btn-primary me-2">Edit</a>
+                                        <button class="btn btn-danger"
+                                            onclick="deleteProduct('{{this._id}}', '{{this.name}}')">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             {{else}}
-            <p class="text-center text-danger">Products details are not available or there are no products.</p>
-            <p class="text-center text-danger">Pls add products</p>
+            <div class="col-md-12">
+                <div data-aos="fade-down" class="card text-center p-4" style="width: auto;">
+                    <h1 class="text-danger mt-5 mb-4">Products not found!!</h1>
+                    <p class="text-warning fs-4 mb-3">
+                        Product details are not available.
+                    </p>
+                    <p class="text-primary fs-4 mb-5">Please add products</p>
+                </div>
+            </div>
             {{/if}}
         </div>
     </div>

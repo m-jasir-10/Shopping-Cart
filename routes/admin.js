@@ -26,10 +26,11 @@ const verifyLogin = (req, res, next) => {
 router.get('/', verifyLogin, async function (req, res, next) {
     let ordersCount = await productHelpers.getOrdersCount();
     let usersCount = await productHelpers.getUsersCount();
+    let productsCount = await productHelpers.getProductsCount();
     productHelpers.getAllProducts()
         .then((products) => {
             let admin = req.session.admin;
-            res.render('admin/view-products.hbs', { admin, products, usersCount, ordersCount });
+            res.render('admin/view-products.hbs', { admin, products, productsCount, usersCount, ordersCount });
         });
 });
 
@@ -58,9 +59,12 @@ router.get('/logout', (req, res) => {
     res.redirect('/admin');
 });
 
-router.get('/add-product', verifyLogin, (req, res) => {
+router.get('/add-product', verifyLogin, async (req, res) => {
     let admin = req.session.admin;
-    res.render('admin/add-product', { admin });
+    let ordersCount = await productHelpers.getOrdersCount();
+    let usersCount = await productHelpers.getUsersCount();
+    let productsCount = await productHelpers.getProductsCount();
+    res.render('admin/add-product', { admin, ordersCount, usersCount, productsCount });
 });
 
 router.post('/add-product', verifyLogin, (req, res) => {
@@ -105,8 +109,11 @@ router.post('/delete-product', verifyLogin, (req, res) => {
 router.get('/edit-product/:id', verifyLogin, async (req, res) => {
     let admin = req.session.admin;
     let productId = req.params.id;
+    let ordersCount = await productHelpers.getOrdersCount();
+    let usersCount = await productHelpers.getUsersCount();
+    let productsCount = await productHelpers.getProductsCount();
     let product = await productHelpers.getProductDetails(productId);
-    res.render('admin/edit-product', { admin, product });
+    res.render('admin/edit-product', { admin, product, ordersCount, usersCount, productsCount });
 });
 
 router.post('/edit-product/:id', async (req, res) => {
@@ -156,10 +163,11 @@ router.post('/edit-product/:id', async (req, res) => {
 
 router.get('/all-orders', verifyLogin, async (req, res) => {
     let admin = req.session.admin;
+    let productsCount = await productHelpers.getProductsCount();
     let ordersCount = await productHelpers.getOrdersCount();
     let usersCount = await productHelpers.getUsersCount();
     productHelpers.getAllOrderDetails().then((orders) => {
-        res.render('admin/all-orders', { admin, orders, ordersCount, usersCount });
+        res.render('admin/all-orders', { admin, orders, productsCount, ordersCount, usersCount });
     });
 });
 
@@ -173,21 +181,23 @@ router.post('/change-order-status', verifyLogin, (req, res) => {
 router.get('/all-users', verifyLogin, async (req, res) => {
     let admin = req.session.admin;
     let usersCount = await productHelpers.getUsersCount();
+    let productsCount = await productHelpers.getProductsCount();
     let ordersCount = await productHelpers.getOrdersCount();
     productHelpers.getAllUsers().then((users) => {
-        res.render('admin/all-users', { admin, users, usersCount, ordersCount })
+        res.render('admin/all-users', { admin, users, usersCount, productsCount, ordersCount })
     });
 });
 
 router.get('/view-user-orders/:id', verifyLogin, async (req, res) => {
     let admin = req.session.admin;
     let userId = req.params.id;
+    let productsCount = await productHelpers.getProductsCount();
     let usersCount = await productHelpers.getUsersCount();
     let ordersCount = await productHelpers.getOrdersCount();
     let userOrders = await productHelpers.getUserOrders(userId);
     let userOrdersCount = await productHelpers.getUserOrdersCount(userId);
     let userInfo = await productHelpers.getUserDetails(userId);
-    res.render('admin/user-orders', { admin, userOrders, userInfo, userOrdersCount, ordersCount, usersCount });
+    res.render('admin/user-orders', { admin, userOrders, userInfo, productsCount, userOrdersCount, ordersCount, usersCount });
 });
 
 module.exports = router;

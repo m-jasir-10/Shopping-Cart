@@ -175,5 +175,12 @@ module.exports = {
             let userOrdersCount = await db.get().collection(collections.ORDER_COLLECTION).countDocuments({userId: new ObjectId(userId)});
             resolve(userOrdersCount);
         });
-    }
+    },
+
+    getProductsCount: () => {
+        return new Promise(async (resolve, reject) => {
+            let productsCount = await db.get().collection(collections.PRODUCT_COLLECTION).countDocuments();
+            resolve(productsCount);
+        });
+    },
 };
