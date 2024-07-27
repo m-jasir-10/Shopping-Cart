@@ -70,6 +70,7 @@ router.get('/add-product', verifyLogin, async (req, res) => {
 router.post('/add-product', verifyLogin, (req, res) => {
     let image = req.files.image;
     let imageExtension = path.extname(image.name).substring(1).toLowerCase();
+    let productName = req.body.name.replace(/\s+/g, '-').toLowerCase();
 
     if (isNaN(req.body.price) || req.body.price <= 0) {
         return res.json({ status: false, message: "Price must be a positive number" });
@@ -77,7 +78,7 @@ router.post('/add-product', verifyLogin, (req, res) => {
 
     productHelpers.addProduct(req.body)
         .then((productId) => {
-            let imagePath = '/images/products/' + productId + imageExtension;
+            let imagePath = '/images/products/' + productName + '.' + imageExtension;
             let uploadPath = path.join(__dirname, '../public', imagePath);
             image.mv(uploadPath, (err) => {
                 if (!err) {
@@ -120,6 +121,7 @@ router.post('/edit-product/:id', async (req, res) => {
     let productId = req.params.id;
     let productDetails = req.body;
     let image = req.files ? req.files.image : null;
+    let productName = req.body.name.replace(/\s+/g, '-').toLowerCase();
 
     if (isNaN(productDetails.price) || productDetails.price <= 0) {
         return res.json({ status: false, message: "Price must be a positive number" });
@@ -128,7 +130,7 @@ router.post('/edit-product/:id', async (req, res) => {
     if (image) {
         let imageExtension = path.extname(image.name).substring(1).toLowerCase();
 
-        let imagePath = '/images/products/' + productId + imageExtension;
+        let imagePath = '/images/products/' + productName + '.' + imageExtension;
         let uploadPath = path.join(__dirname, '../public', imagePath);
 
         image.mv(uploadPath, async (err) => {
@@ -162,8 +164,8 @@ router.post('/edit-product/:id', async (req, res) => {
 });
 
 router.get('/get-products-count', verifyLogin, async (req, res) => {
-   let productsCount = await productHelpers.getProductsCount();
-   res.json({ status: true, count: productsCount }); 
+    let productsCount = await productHelpers.getProductsCount();
+    res.json({ status: true, count: productsCount });
 });
 
 router.get('/all-orders', verifyLogin, async (req, res) => {
