@@ -161,6 +161,11 @@ router.post('/edit-product/:id', async (req, res) => {
     }
 });
 
+router.get('/get-products-count', verifyLogin, async (req, res) => {
+   let productsCount = await productHelpers.getProductsCount();
+   res.json({ status: true, count: productsCount }); 
+});
+
 router.get('/all-orders', verifyLogin, async (req, res) => {
     let admin = req.session.admin;
     let productsCount = await productHelpers.getProductsCount();

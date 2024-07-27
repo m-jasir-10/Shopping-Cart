@@ -30,16 +30,16 @@
                                         </td>
                                         <td>{{this.name}}</td>
                                         <td>{{this.quantity}}</td>
-                                        <td>{{this.price}}</td>
+                                        <td>₹ {{this.price}}</td>
                                     </tr>
                                     {{/each}}
                                 </tbody>
                             </table>
                         </div>
                         <div class="row text-center mt-4">
-                            <div class="col-md-4 fs-4 mb-3"><strong>Total Amount:</strong> Rs {{this.totalPrice}}</div>
+                            <div class="col-md-4 fs-4 mb-3"><strong>Total Amount:</strong> ₹ {{this.totalPrice}}</div>
                             <div class="col-md-4 fs-4 mb-3"><strong>Payment Method:</strong> {{this.paymentMethod}}</div>
-                            <div class="col-md-4 fs-4 mb-3"><strong>Status:</strong> {{this.orderStatus}}</div>
+                            <div class="col-md-4 fs-4 mb-3 order-status"><strong>Status:</strong> {{this.orderStatus}}</div>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -105,5 +105,9 @@
     .table th,
     .table td {
         vertical-align: middle;
+    }
+
+    .order-status {
+        text-transform: capitalize;
     }
 </style>

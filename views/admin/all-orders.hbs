@@ -46,15 +46,15 @@
                                         <option value="delivered">Delivered</option>
                                     </select>
                                 </td>
-                                <td>
-                                    <div class="d-flex justify-content-center align-items-center mb-3">
+                                <td class="d-flex flex-column">
+                                    <div class="d-flex mb-3">
                                         <button class="btn btn-primary text-light" type="button" data-bs-toggle="modal"
-                                            data-bs-target="#userModal-{{this._id}}">
+                                            data-bs-target="#userModal-{{this._id}}" >
                                             Delivery Details
                                         </button>
                                         <div class="modal fade" id="userModal-{{this._id}}" tabindex="-1"
                                             aria-labelledby="userModalLabel-{{this._id}}" aria-hidden="true">
-                                            <div class="modal-dialog">
+                                            <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title" id="userModalLabel-{{this._id}}">User
@@ -109,14 +109,14 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="d-flex justify-content-center align-items-center">
+                                    <div class="d-flex">
                                         <button class="btn btn-success d-flex" type="button" data-bs-toggle="modal"
                                             data-bs-target="#productsModal-{{this._id}}">
                                             View Products
                                         </button>
                                         <div class="modal fade" id="productsModal-{{this._id}}" tabindex="-1"
                                             aria-labelledby="productsModalLabel-{{this._id}}" aria-hidden="true">
-                                            <div class="modal-dialog">
+                                            <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title" id="productsModalLabel-{{this._id}}">
@@ -180,7 +180,7 @@
 
 <style>
     .status-dropdown select {
-        width: 150px;
+        width: 100%;
         padding: 8px 12px;
         border: 1px solid #ccc;
         border-radius: 4px;
@@ -197,6 +197,25 @@
     .table td {
         vertical-align: middle;
     }
+
+    @media (max-width: 768px) {
+    .modal-dialog {
+        max-width: 90%;
+    }
+
+    .d-flex {
+        flex-direction: column;
+    }
+
+    .d-flex.flex-md-row {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
 </style>
 
 <script>

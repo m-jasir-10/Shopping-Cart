@@ -97,6 +97,7 @@
                         .then(() => {
                             document.getElementById('addProductForm').reset();
                             document.getElementById('imageView').src = '';
+                            updateProductCount();
                         });
                 } else {
                     Swal.fire({
@@ -108,6 +109,18 @@
                     });
                 }
             }
+        });
+    }
+
+    function updateProductCount() {
+        $.ajax({
+            url: '/admin/get-products-count',
+            method: 'get',
+            success: (response) => {
+                if (response.status) {
+                    $('#products-count').text(response.count);
+                }
+            },
         });
     }
 </script>

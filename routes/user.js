@@ -32,7 +32,7 @@ router.get('/', async (req, res, next) => {
     let ordersCount = null;
     
     if (user) {
-        let ordersCount = await userHelpers.getOrdersCount(user._id);
+        ordersCount = await userHelpers.getOrdersCount(user._id);
     }
 
     if (user) {

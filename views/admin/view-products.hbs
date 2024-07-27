@@ -7,7 +7,7 @@
         </div>
         <div class="row mt-5">
             {{#if products}}
-            <h1 class="text-center mb-5">Products ( {{productsCount}} )</h1>
+            <h1 class="text-center mb-5" id="productsCount">Products ( {{productsCount}} )</h1>
             <div class="bg-light p-5">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover mt-4 text-center" id="products-table">
@@ -96,19 +96,25 @@
                                 .then(() => {
                                     document.getElementById(productId).remove();
                                     updateTableIndex();
+                                    updateProductCount();
                                 });
-                        } else {
-                            Swal.fire({
-                                title: 'Error',
-                                text: response.message,
-                                icon: 'error',
-                                timer: 2000,
-                                showConfirmButton: true
-                            });
                         }
                     }
                 });
             }
+        });
+    }
+
+    function updateProductCount() {
+        $.ajax({
+            url: '/admin/get-products-count',
+            method: 'get',
+            success: (response) => {
+                if (response.status) {
+                    $('#products-count').text(response.count);
+                    $('#productsCount').text(`Products ( ${response.count} )`);
+                }
+            },
         });
     }
 
