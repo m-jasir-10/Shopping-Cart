@@ -1,3 +1,30 @@
-<h1>{{message}}</h1>
-<h2>{{error.status}}</h2>
-<pre>{{error.stack}}</pre>
+<div class="container">
+    <h1>{{message}}</h1>
+    <h2>Status: {{error.status}}</h2>
+    <pre>{{error.stack}}</pre>
+</div>
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        margin: 50px;
+    }
+
+    h1 {
+        color: #d9534f;
+    }
+
+    h2 {
+        color: #5bc0de;
+    }
+
+    pre {
+        background: #f7f7f7;
+        padding: 10px;
+        border: 1px solid #ccc;
+    }
+</style>
