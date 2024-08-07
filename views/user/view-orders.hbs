@@ -3,11 +3,11 @@
         <div class="row">
             <div class="col-md-12">
                 {{#if orders}}
-                <h1 class="text-center mb-5">Order Details ( {{ordersCount}} )</h1>
+                <h1 class="text-center mb-5">Orders ( {{ordersCount}} )</h1>
                 {{#each orders}}
                 <div class="card mb-5">
                     <div class="card-header">
-                        <h5 class="mb-2"><strong>Order ID:</strong> {{this._id}}</h5>
+                        <h6 class="mb-2"><strong>Order ID:</strong> {{this._id}}</h6>
                         <p class="mb-2"><strong>Date:</strong> {{this.orderDate}}</p>
                         <p><strong>Time:</strong> {{this.orderTime}}</p>
                     </div>
@@ -38,8 +38,10 @@
                         </div>
                         <div class="row text-center mt-4">
                             <div class="col-md-4 fs-4 mb-3"><strong>Total Amount:</strong> ₹ {{this.totalPrice}}</div>
-                            <div class="col-md-4 fs-4 mb-3"><strong>Payment Method:</strong> {{this.paymentMethod}}</div>
-                            <div class="col-md-4 fs-4 mb-3 order-status"><strong>Status:</strong> {{this.orderStatus}}</div>
+                            <div class="col-md-4 fs-4 mb-3"><strong>Payment Method:</strong> {{this.paymentMethod}}
+                            </div>
+                            <div class="col-md-4 fs-4 mb-3 order-status"><strong>Status:</strong> {{this.orderStatus}}
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer">

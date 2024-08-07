@@ -63,7 +63,7 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                     </div>
-                                                    <div class="modal-body">
+                                                    <div class="modal-body table-responsive">
                                                         <table class="table table-bordered">
                                                             <tbody>
                                                                 <tr>
@@ -124,7 +124,7 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                     </div>
-                                                    <div class="modal-body">
+                                                    <div class="modal-body table-responsive">
                                                         <table class="table table-bordered">
                                                             <thead>
                                                                 <tr>
@@ -187,6 +187,7 @@
         background-color: #b4c0ce;
         color: #040505;
         font-size: 16px;
+        box-sizing: border-box;
     }
 
     .status {
@@ -196,6 +197,7 @@
     .table th,
     .table td {
         vertical-align: middle;
+        white-space: nowrap;
     }
 
     @media (max-width: 768px) {
